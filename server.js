@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 const { testConnection, query } = require('./config/db');
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// Static files
+// Static files (for local runtime)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
@@ -22,8 +23,13 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const apiRoutes = require('./routes/api');
 
+// Support both /api/... and direct routing on serverless
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/admin', adminRoutes);
+app.use('/admin-api', adminRoutes);
+
 app.use('/api', apiRoutes);
 
 // Dynamic robots.txt
@@ -60,9 +66,15 @@ app.get('/sitemap.xml', async (req, res) => {
       { path: '/contact', changefreq: 'monthly', priority: '0.7' }
     ];
 
-    const [projects] = await query(
-      "SELECT slug, updated_at FROM wajidx_projects WHERE status = 'published' ORDER BY updated_at DESC"
-    );
+    let projects = [];
+    try {
+      const [p] = await query(
+        "SELECT slug, updated_at FROM wajidx_projects WHERE status = 'published' ORDER BY updated_at DESC"
+      );
+      if (p) projects = p;
+    } catch (e) {
+      console.warn('[SITEMAP NOTE] DB query skipped:', e.message);
+    }
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
@@ -98,10 +110,13 @@ app.get('/sitemap.xml', async (req, res) => {
   }
 });
 
-// Single Page Application Fallback for Frontend & Admin
+// Single Page Application Fallback for Local Runtime
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
-    return res.sendFile(path.join(__dirname, 'public/index.html'));
+    const indexPath = path.join(__dirname, 'public/index.html');
+    if (fs.existsSync(indexPath)) {
+      return res.sendFile(indexPath);
+    }
   }
   next();
 });
