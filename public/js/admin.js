@@ -659,6 +659,48 @@
     const modalBody = document.getElementById('admin-modal-body');
     if (!modal || !modalBody) return;
 
+    // Ensure categories and technologies are loaded
+    if (!adminState.categories || adminState.categories.length === 0 || !adminState.technologies || adminState.technologies.length === 0) {
+      try {
+        const [catRes, techRes] = await Promise.all([
+          adminFetch('/api/admin/categories'),
+          adminFetch('/api/admin/technologies')
+        ]);
+        if (catRes && Array.isArray(catRes.categories) && catRes.categories.length > 0) {
+          adminState.categories = catRes.categories;
+        }
+        if (techRes && Array.isArray(techRes.technologies) && techRes.technologies.length > 0) {
+          adminState.technologies = techRes.technologies;
+        }
+      } catch (e) {
+        console.warn('[ADMIN NOTE] Fallback to default categories/technologies');
+      }
+    }
+
+    const categoriesList = (adminState.categories && adminState.categories.length > 0)
+      ? adminState.categories
+      : [
+          { id: 1, name: 'Business Systems', slug: 'business-systems' },
+          { id: 2, name: 'POS & Hospitality', slug: 'pos-hospitality' },
+          { id: 3, name: 'AI & Automation', slug: 'ai-automation' },
+          { id: 4, name: 'Web Applications', slug: 'web-applications' },
+          { id: 5, name: 'Inventory & ERP', slug: 'inventory-erp' }
+        ];
+
+    const technologiesList = (adminState.technologies && adminState.technologies.length > 0)
+      ? adminState.technologies
+      : [
+          { id: 1, name: 'React', color: '#61DAFB' },
+          { id: 2, name: 'Node.js', color: '#68A063' },
+          { id: 3, name: 'MySQL', color: '#00758F' },
+          { id: 4, name: 'PostgreSQL', color: '#336791' },
+          { id: 5, name: 'Tailwind CSS', color: '#38BDF8' },
+          { id: 6, name: 'Python & OpenCV', color: '#3776AB' },
+          { id: 7, name: 'FastAPI', color: '#059669' },
+          { id: 8, name: 'Docker', color: '#2496ED' },
+          { id: 9, name: 'REST API', color: '#2674E7' }
+        ];
+
     let project = {
       title: '',
       slug: '',
@@ -729,7 +771,7 @@
               <label class="font-label-caps text-xs text-on-surface-variant">CATEGORY</label>
               <select name="category_id" class="w-full bg-surface-container-lowest border border-outline-variant/40 rounded px-3.5 py-2 text-sm text-on-surface focus:border-on-tertiary-container focus:outline-none">
                 <option value="">-- Select Category --</option>
-                ${adminState.categories.map(c => `
+                ${categoriesList.map(c => `
                   <option value="${c.id}" ${project.category_id == c.id ? 'selected' : ''}>${escape(c.name)}</option>
                 `).join('')}
               </select>
@@ -828,7 +870,7 @@
           <div class="flex flex-col gap-2">
             <label class="font-label-caps text-xs text-on-surface-variant">TECHNOLOGY STACK</label>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 p-3 rounded bg-surface-container-lowest border border-outline-variant/30 max-h-40 overflow-y-auto">
-              ${adminState.technologies.map(t => {
+              ${technologiesList.map(t => {
                 const checked = project.technology_ids && project.technology_ids.includes(t.id);
                 return `
                   <label class="flex items-center gap-2 text-xs text-on-surface cursor-pointer select-none">
@@ -896,7 +938,7 @@
 
         const formData = new FormData(form);
         const selectedTechIds = [];
-        adminState.technologies.forEach(t => {
+        technologiesList.forEach(t => {
           if (formData.get(`tech_${t.id}`)) {
             selectedTechIds.push(t.id);
           }
@@ -938,10 +980,16 @@
         if (res && res.success) {
           closeModal();
           const tabContainer = document.getElementById('admin-tab-container');
-          if (tabContainer) renderProjectsTab(tabContainer);
+          if (tabContainer) {
+            if (adminState.currentTab === 'dashboard') {
+              renderDashboardTab(tabContainer);
+            } else {
+              renderProjectsTab(tabContainer);
+            }
+          }
         } else {
           alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
-          alertBox.textContent = res?.error || 'Failed to save project.';
+          alertBox.textContent = res?.error || 'Failed to save project. Ensure database is connected.';
           alertBox.classList.remove('hidden');
           saveBtn.disabled = false;
           saveBtn.innerHTML = `<span>Save</span>`;
