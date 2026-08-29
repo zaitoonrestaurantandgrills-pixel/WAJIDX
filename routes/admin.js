@@ -364,7 +364,7 @@ router.post('/projects', async (req, res) => {
     });
   } catch (error) {
     console.error('[ADMIN ERROR] Create project error:', error);
-    res.status(500).json({ success: false, error: 'Failed to create project.' });
+    res.status(500).json({ success: false, error: error.message || 'Failed to create project.' });
   }
 });
 
