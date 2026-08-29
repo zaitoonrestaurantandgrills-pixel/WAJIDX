@@ -48,20 +48,6 @@ function slugify(text) {
 // -------------------------------------------------------------
 router.get('/stats', async (req, res) => {
   try {
-    const [projectCounts] = await query(`
-      SELECT 
-        COUNT(*) AS total_projects,
-        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) AS published_projects,
-        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) AS draft_projects,
-        SUM(CASE WHEN is_featured = 1 THEN 1 ELSE 0 END) AS featured_projects
-      FROM wajidx_projects
-    `);
-
-// -------------------------------------------------------------
-// DASHBOARD STATS
-// -------------------------------------------------------------
-router.get('/stats', async (req, res) => {
-  try {
     let projectCounts = [{}];
     let catCount = [{ total_categories: 0 }];
     let techCount = [{ total_technologies: 0 }];
