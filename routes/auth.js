@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { query } = require('../config/db');
 const { verifyAdmin, JWT_SECRET } = require('../middleware/auth');
+const { supabase, isConfigured: isSupabaseConfigured } = require('../config/supabase');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -13,12 +14,49 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Username/email and password are required.' });
     }
 
+    const cleanInput = username.trim();
+
+    // 1. Check Supabase Auth if configured and input is an email
+    if (isSupabaseConfigured() && supabase && cleanInput.includes('@')) {
+      try {
+        const { data: sbData, error: sbError } = await supabase.auth.signInWithPassword({
+          email: cleanInput,
+          password: password
+        });
+
+        if (sbData?.session?.access_token && !sbError) {
+          const [admins] = await query(
+            'SELECT id, username, email, name, role FROM wajidx_admins WHERE email = ? LIMIT 1',
+            [cleanInput]
+          );
+
+          const adminUser = admins && admins.length > 0 ? admins[0] : {
+            id: 1,
+            username: sbData.user.email.split('@')[0],
+            email: sbData.user.email,
+            name: sbData.user.user_metadata?.full_name || 'WAJIDX Admin',
+            role: 'superadmin'
+          };
+
+          return res.json({
+            success: true,
+            message: 'Login successful via Supabase Auth',
+            token: sbData.session.access_token,
+            admin: adminUser
+          });
+        }
+      } catch (err) {
+        // Fall back to database authentication
+      }
+    }
+
+    // 2. Query admin user from database (PostgreSQL / MySQL)
     const [admins] = await query(
       'SELECT id, username, email, password_hash, name, role FROM wajidx_admins WHERE username = ? OR email = ? LIMIT 1',
-      [username.trim(), username.trim()]
+      [cleanInput, cleanInput]
     );
 
-    if (admins.length === 0) {
+    if (!admins || admins.length === 0) {
       return res.status(401).json({ success: false, error: 'Invalid username or password.' });
     }
 

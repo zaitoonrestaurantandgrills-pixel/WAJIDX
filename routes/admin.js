@@ -5,27 +5,13 @@ const fs = require('fs');
 const multer = require('multer');
 const { query } = require('../config/db');
 const { verifyAdmin } = require('../middleware/auth');
+const { uploadToStorage, isConfigured: isSupabaseConfigured } = require('../config/supabase');
 
 // Protect all /api/admin/* routes
 router.use(verifyAdmin);
 
-// Configure Multer for File Uploads
+// Configure Multer in memory for cloud & local compatibility
 const uploadDir = path.join(__dirname, '../public/uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const safeBase = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const unique = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${safeBase}_${unique}${ext}`);
-  }
-});
 
 const fileFilter = (req, file, cb) => {
   const allowed = /jpeg|jpg|png|webp|svg|gif/;
@@ -39,7 +25,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter
 });
@@ -641,19 +627,40 @@ router.delete('/technologies/:id', async (req, res) => {
 });
 
 // -------------------------------------------------------------
-// MEDIA UPLOAD
+// MEDIA UPLOAD (Supabase Storage with Local Disk Fallback)
 // -------------------------------------------------------------
-router.post('/upload', upload.single('image'), (req, res) => {
+router.post('/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No image file uploaded.' });
     }
-    const publicUrl = `/uploads/${req.file.filename}`;
+
+    const ext = path.extname(req.file.originalname).toLowerCase();
+    const safeBase = path.basename(req.file.originalname, ext).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const unique = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
+    const filename = `${safeBase}_${unique}${ext}`;
+
+    let publicUrl = '';
+
+    if (isSupabaseConfigured()) {
+      // Upload directly to Supabase Storage bucket 'wajidx-media'
+      const storagePath = `uploads/${filename}`;
+      publicUrl = await uploadToStorage('wajidx-media', storagePath, req.file.buffer, req.file.mimetype);
+    } else {
+      // Local development fallback
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      const localFilePath = path.join(uploadDir, filename);
+      fs.writeFileSync(localFilePath, req.file.buffer);
+      publicUrl = `/uploads/${filename}`;
+    }
+
     res.json({
       success: true,
       message: 'Image uploaded successfully',
       file: {
-        filename: req.file.filename,
+        filename,
         originalName: req.file.originalname,
         size: req.file.size,
         mimetype: req.file.mimetype,
@@ -662,7 +669,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
     });
   } catch (error) {
     console.error('[ADMIN UPLOAD ERROR]', error);
-    res.status(500).json({ success: false, error: 'Failed to upload image.' });
+    res.status(500).json({ success: false, error: error.message || 'Failed to upload image.' });
   }
 });
 

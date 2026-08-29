@@ -115,11 +115,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
-app.listen(PORT, async () => {
-  console.log(`====================================================`);
-  console.log(`🚀 WAJIDX Platform is active on: ${SITE_URL}`);
-  console.log(`🔒 Admin Dashboard available at: ${SITE_URL}/admin`);
-  console.log(`====================================================`);
-  await testConnection();
-});
+// Start Server (only when run directly)
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`====================================================`);
+    console.log(`🚀 WAJIDX Platform is active on: ${SITE_URL}`);
+    console.log(`🔒 Admin Dashboard available at: ${SITE_URL}/admin`);
+    console.log(`====================================================`);
+    await testConnection();
+  });
+}
+
+module.exports = app;

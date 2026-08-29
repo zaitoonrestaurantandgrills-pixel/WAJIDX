@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { query } = require('../config/db');
+const { supabaseAdmin, isConfigured: isSupabaseConfigured } = require('../config/supabase');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'wajidx_super_secret_jwt_key_2026_precision_minimalism';
 
@@ -23,6 +24,23 @@ async function verifyAdmin(req, res, next) {
       });
     }
 
+    // 1. Try Supabase Auth Token verification if Supabase is active
+    if (isSupabaseConfigured() && supabaseAdmin) {
+      try {
+        const { data: { user }, error: sbError } = await supabaseAdmin.auth.getUser(token);
+        if (user && !sbError) {
+          const [rows] = await query('SELECT id, username, email, name, role FROM wajidx_admins WHERE email = ? LIMIT 1', [user.email]);
+          if (rows && rows.length > 0) {
+            req.admin = rows[0];
+            return next();
+          }
+        }
+      } catch (err) {
+        // Fall through to JWT verification
+      }
+    }
+
+    // 2. Fallback to standard JWT verification
     const decoded = jwt.verify(token, JWT_SECRET);
     if (!decoded || !decoded.id) {
       return res.status(401).json({
