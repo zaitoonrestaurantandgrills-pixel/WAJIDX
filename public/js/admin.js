@@ -387,8 +387,18 @@
       return;
     }
 
-    const s = res.stats;
+    const s = res?.stats || {
+      projects: { total_projects: 0, published_projects: 0, draft_projects: 0, featured_projects: 0 },
+      categories: 0,
+      technologies: 0,
+      messages: { total_messages: 0, unread_messages: 0 },
+      recentMessages: [],
+      recentProjects: []
+    };
     adminState.stats = s;
+
+    const proj = s.projects || {};
+    const msgs = s.messages || {};
 
     container.innerHTML = `
       <div class="flex flex-col gap-8 animate-fade-in-up">
@@ -397,15 +407,15 @@
           <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between">
             <span class="font-label-caps text-xs text-on-surface-variant">TOTAL PROJECTS</span>
             <div class="flex items-baseline justify-between mt-3">
-              <span class="font-display-lg text-4xl font-bold text-on-surface">${s.projects.total_projects || 0}</span>
-              <span class="text-xs text-green-400 font-semibold">${s.projects.published_projects || 0} Published</span>
+              <span class="font-display-lg text-4xl font-bold text-on-surface">${proj.total_projects || 0}</span>
+              <span class="text-xs text-green-400 font-semibold">${proj.published_projects || 0} Published</span>
             </div>
           </div>
 
           <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between">
             <span class="font-label-caps text-xs text-on-surface-variant">FEATURED SHOWCASES</span>
             <div class="flex items-baseline justify-between mt-3">
-              <span class="font-display-lg text-4xl font-bold text-on-tertiary-container">${s.projects.featured_projects || 0}</span>
+              <span class="font-display-lg text-4xl font-bold text-on-tertiary-container">${proj.featured_projects || 0}</span>
               <span class="text-xs text-on-surface-variant">Homepage Active</span>
             </div>
           </div>
@@ -421,9 +431,9 @@
           <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between">
             <span class="font-label-caps text-xs text-on-surface-variant">CONTACT INQUIRIES</span>
             <div class="flex items-baseline justify-between mt-3">
-              <span class="font-display-lg text-4xl font-bold text-on-surface">${s.messages.total_messages || 0}</span>
-              <span class="text-xs font-semibold ${s.messages.unread_messages > 0 ? 'text-amber-400' : 'text-on-surface-variant'}">
-                ${s.messages.unread_messages || 0} Unread
+              <span class="font-display-lg text-4xl font-bold text-on-surface">${msgs.total_messages || 0}</span>
+              <span class="text-xs font-semibold ${msgs.unread_messages > 0 ? 'text-amber-400' : 'text-on-surface-variant'}">
+                ${msgs.unread_messages || 0} Unread
               </span>
             </div>
           </div>
@@ -437,7 +447,7 @@
           </button>
           <button id="dash-view-messages-btn" class="bg-surface-container-highest border border-outline-variant/40 text-on-surface px-5 py-2.5 rounded font-medium text-xs hover:border-on-tertiary-container transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">mail</span>
-            Review Inquiries (${s.messages.unread_messages || 0})
+            Review Inquiries (${msgs.unread_messages || 0})
           </button>
         </div>
 
