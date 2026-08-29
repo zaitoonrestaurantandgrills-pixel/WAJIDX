@@ -3,33 +3,46 @@ const { Pool: PgPool } = require('pg');
 const mysql = require('mysql2/promise');
 
 const postgresUrl = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
 
 let isPostgres = Boolean(postgresUrl);
 let pgPool = null;
 let mysqlPool = null;
 
 if (isPostgres) {
-  pgPool = new PgPool({
-    connectionString: postgresUrl,
-    ssl: { rejectUnauthorized: false },
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000
-  });
-  console.log('[DB] Configured for Supabase PostgreSQL');
-} else {
-  mysqlPool = mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'devaj',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    charset: 'utf8mb4'
-  });
-  console.log('[DB] Configured for MySQL (devaj)');
+  try {
+    pgPool = new PgPool({
+      connectionString: postgresUrl,
+      ssl: { rejectUnauthorized: false },
+      max: 5,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000
+    });
+    pgPool.on('error', (err) => {
+      console.warn('[DB PG POOL WARNING]', err.message);
+    });
+    console.log('[DB] Configured for Supabase PostgreSQL');
+  } catch (err) {
+    console.error('[DB PG INIT ERROR]', err.message);
+  }
+} else if (!isVercel) {
+  // Only initialize local MySQL pool if NOT running on Vercel serverless without DB
+  try {
+    mysqlPool = mysql.createPool({
+      host: process.env.DB_HOST || '127.0.0.1',
+      port: parseInt(process.env.DB_PORT || '3306', 10),
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_NAME || 'devaj',
+      waitForConnections: true,
+      connectionLimit: 5,
+      queueLimit: 0,
+      charset: 'utf8mb4'
+    });
+    console.log('[DB] Configured for local MySQL (devaj)');
+  } catch (err) {
+    console.error('[DB MYSQL INIT ERROR]', err.message);
+  }
 }
 
 /**
@@ -57,18 +70,10 @@ function convertToPostgresSql(sql, params) {
 
   // Handle parameter placeholders: ? -> $1, $2, ...
   let paramIndex = 1;
-  const flatParams = [];
-
-  // Flatten nested array params (e.g. IN (?))
   const newParams = [];
   if (Array.isArray(params)) {
     for (const p of params) {
-      if (Array.isArray(p)) {
-        // e.g. WHERE id IN (?) -> WHERE id = ANY($1)
-        newParams.push(p);
-      } else {
-        newParams.push(p);
-      }
+      newParams.push(p);
     }
   }
 
@@ -98,7 +103,7 @@ async function query(sql, params = []) {
       const result = await client.query(pgSql, pgParams);
 
       if (sql.trim().toUpperCase().startsWith('SELECT')) {
-        return [result.rows, result.fields];
+        return [result.rows || [], result.fields];
       }
 
       // INSERT / UPDATE / DELETE result wrapper
@@ -109,14 +114,16 @@ async function query(sql, params = []) {
           insertId,
           affectedRows: result.rowCount,
           rowCount: result.rowCount,
-          rows: result.rows
+          rows: result.rows || []
         }
       ];
     } finally {
       client.release();
     }
-  } else {
+  } else if (mysqlPool) {
     return mysqlPool.query(sql, params);
+  } else {
+    throw new Error('Database is not connected. Please set SUPABASE_DB_URL in environment variables.');
   }
 }
 
@@ -137,8 +144,9 @@ async function testConnection() {
       conn.release();
       return true;
     }
+    return false;
   } catch (error) {
-    console.error('[DB ERROR] Failed to connect to database:', error.message);
+    console.warn('[DB WARNING] Database test connection failed:', error.message);
     return false;
   }
 }
