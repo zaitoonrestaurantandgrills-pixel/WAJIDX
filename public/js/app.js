@@ -162,6 +162,9 @@
     const appContainer = document.getElementById('app-root');
     if (!appContainer) return;
 
+    // Route guard cleanup: ensure route-guard suppression is cleared on destination page render
+    document.documentElement.classList.remove('not-home-route');
+
     // Ensure public header & footer are visible
     const siteHeader = document.getElementById('site-header');
     const siteFooter = document.getElementById('site-footer');
@@ -194,34 +197,56 @@
     } else {
       render404Page(appContainer);
     }
-
-    // Attach internal link interception
-    attachLinkInterception(appContainer);
   }
 
-  // Intercept normal anchor clicks for seamless SPA navigation
-  function attachLinkInterception(container) {
-    const root = container || document;
-    root.querySelectorAll('a[href]').forEach(link => {
+  // Global delegated link interceptor for instantaneous, flicker-free SPA navigation
+  let globalNavAttached = false;
+  function initGlobalNavigation() {
+    if (globalNavAttached) return;
+    globalNavAttached = true;
+
+    document.addEventListener('click', (e) => {
+      // Ignore right/middle clicks or keyboard modifier combinations (Ctrl, Cmd, Shift, Alt)
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+
       const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Handle internal application paths without triggering full browser reloads
       if (
         href.startsWith('/') &&
+        !href.startsWith('//') &&
         !href.startsWith('/api') &&
         !href.startsWith('/uploads') &&
+        !href.startsWith('/auth') &&
+        !href.startsWith('/admin-api') &&
         !link.hasAttribute('target') &&
-        !link.hasAttribute('download')
+        !link.hasAttribute('download') &&
+        !link.hasAttribute('data-no-route')
       ) {
-        link.onclick = (e) => {
-          e.preventDefault();
-          if (window.closeMobileNav) window.closeMobileNav();
-          if (window.location.pathname !== href) {
-            window.history.pushState({}, '', href);
-            router();
-          }
-        };
+        e.preventDefault();
+
+        // Close mobile drawer if open
+        if (window.closeMobileNav) {
+          window.closeMobileNav();
+        }
+
+        const currentPath = window.location.pathname;
+        if (currentPath !== href) {
+          window.history.pushState({}, '', href);
+          router();
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
     });
   }
+
+  // Backward-compatibility stub
+  function attachLinkInterception() {}
 
   // -------------------------------------------------------------
   // HOME PAGE
@@ -1677,7 +1702,10 @@
     // 1. Listen to back/forward browser history
     window.addEventListener('popstate', router);
 
-    // 2. Execute router immediately so initial screen renders with zero network lag
+    // 2. Attach global delegated navigation so all navbar and page links navigate instantaneously
+    initGlobalNavigation();
+
+    // 3. Execute router immediately so initial screen renders with zero network lag
     router();
 
     // 3. Fetch Global Settings, Categories, and Technologies in parallel in background

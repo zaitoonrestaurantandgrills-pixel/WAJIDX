@@ -9,7 +9,32 @@
   <meta name="keywords" content="WAJIDX, software engineering, business systems, POS, restaurant ERP, computer vision, AI automation, web applications"/>
   <link rel="canonical" href="https://wajid.website/"/>
   <link rel="icon" type="image/png" href="/assets/wajidx-logo.png"/>
-  <link rel="preload" as="image" href="/assets/wajid-hero.jpg?v=2.3.0" fetchpriority="high"/>
+  
+  <!-- Route Guard: Detect destination route immediately to prevent Hero Section flash on direct load or refresh -->
+  <script>
+    (function () {
+      var p = window.location.pathname;
+      if (p && p !== '/' && p !== '' && !p.startsWith('/admin')) {
+        document.documentElement.classList.add('not-home-route');
+      } else {
+        var l = document.createElement('link');
+        l.rel = 'preload';
+        l.as = 'image';
+        l.href = '/assets/wajid-hero.jpg?v=2.4.2';
+        l.setAttribute('fetchpriority', 'high');
+        document.head.appendChild(l);
+      }
+    })();
+  </script>
+  <style>
+    /* Suppress homepage pre-rendered hero and sections when loading non-home routes */
+    .not-home-route #home-view-prerender {
+      display: none !important;
+    }
+    .not-home-route #initial-route-loader {
+      display: flex !important;
+    }
+  </style>
   
   <!-- Open Graph -->
   <meta property="og:title" content="WAJIDX — Build. Automate. Innovate."/>
@@ -273,8 +298,16 @@
 
   <!-- Main View Container -->
   <main id="app-root" class="flex-grow pt-[72px]">
-    <!-- Hero Section (From Stitch Design - Enhanced Mobile Responsiveness) -->
-    <section class="relative min-h-[85vh] sm:min-h-[90vh] flex flex-col items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
+    <!-- Route Guard Loader: Displayed cleanly if user directly loads or refreshes a non-home route before app.js runs -->
+    <div id="initial-route-loader" class="hidden py-24 text-center text-on-surface-variant flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="w-8 h-8 rounded-full border-2 border-on-tertiary-container border-t-transparent animate-spin mb-4"></div>
+      <span class="font-code-sm text-xs tracking-widest text-on-surface-variant uppercase">Loading Experience...</span>
+    </div>
+
+    <!-- Pre-rendered Home View (Only visible on / or empty route) -->
+    <div id="home-view-prerender">
+      <!-- Hero Section (From Stitch Design - Enhanced Mobile Responsiveness) -->
+      <section class="relative min-h-[85vh] sm:min-h-[90vh] flex flex-col items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
       <!-- Abstract background bloom -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
@@ -462,6 +495,7 @@
         </a>
       </div>
     </section>
+    </div> <!-- Close #home-view-prerender -->
   </main>
 
   <!-- Shared Global Footer -->
@@ -536,8 +570,8 @@
   <!-- Scripts with Cache-Busting Query Strings -->
   <script src="/js/shader.js?v=2.4.0"></script>
   <script src="/js/universe3d.js?v=2.4.0"></script>
-  <script src="/js/dev_matrix.js?v=2.4.3"></script>
-  <script src="/js/app.js?v=2.4.3"></script>
+  <script src="/js/dev_matrix.js?v=2.4.4"></script>
+  <script src="/js/app.js?v=2.4.4"></script>
   <script src="/js/admin.js?v=2.4.0"></script>
 
   <script>
