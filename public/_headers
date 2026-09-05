@@ -1,13 +1,20 @@
+# Security and Caching Headers for Cloudflare Workers Static Assets
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-/css/*
+/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
 /js/*
   Cache-Control: public, max-age=31536000, immutable
 
-/assets/*
+/css/*
   Cache-Control: public, max-age=31536000, immutable
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

@@ -22,7 +22,7 @@
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
@@ -336,12 +336,14 @@
       });
 
       for (let i = 0; i < nodeCount && lineIdx < maxConnections; i++) {
+        const p1 = nodeMeshes[i].position;
         for (let j = i + 1; j < nodeCount && lineIdx < maxConnections; j++) {
-          const d = nodeMeshes[i].position.distanceTo(nodeMeshes[j].position);
-          if (d < 5.5) {
-            const p1 = nodeMeshes[i].position;
-            const p2 = nodeMeshes[j].position;
+          const p2 = nodeMeshes[j].position;
+          if (Math.abs(p1.x - p2.x) > 5.5 || Math.abs(p1.y - p2.y) > 5.5) continue;
 
+          const d2 = p1.distanceToSquared(p2);
+          if (d2 < 30.25) { // 5.5 * 5.5
+            const d = Math.sqrt(d2);
             const base = lineIdx * 6;
             posArr[base] = p1.x; posArr[base + 1] = p1.y; posArr[base + 2] = p1.z;
             posArr[base + 3] = p2.x; posArr[base + 4] = p2.y; posArr[base + 5] = p2.z;
@@ -368,11 +370,29 @@
       renderer.render(scene, camera);
     };
 
-    animate();
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !animationFrameId) {
+        clock.start();
+        animate();
+      } else if (document.hidden && animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+        clock.stop();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (!document.hidden) {
+      animate();
+    }
 
     // Cleanup hook
     container._cleanup = () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onResize);
       renderer.dispose();

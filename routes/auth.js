@@ -5,13 +5,14 @@ const jwt = require('jsonwebtoken');
 const { query } = require('../config/db');
 const { verifyAdmin, JWT_SECRET } = require('../middleware/auth');
 const { supabase, isConfigured: isSupabaseConfigured } = require('../config/supabase');
+const { authRateLimiter, timingSafeCompare } = require('../middleware/security');
 
 const defaultUser = process.env.ADMIN_DEFAULT_USER || 'admin';
 const defaultEmail = process.env.ADMIN_DEFAULT_EMAIL || 'admin@wajidx.com';
 const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@Wajidx2026!';
 
-// POST /api/auth/login
-router.post('/login', async (req, res) => {
+// POST /api/auth/login (with brute-force rate limiting)
+router.post('/login', authRateLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -85,7 +86,7 @@ router.post('/login', async (req, res) => {
     // 3. Fallback master credential check (if DB is pending configuration or matches default setup)
     if (!dbAuthenticated) {
       const isDefaultUser = (cleanInput.toLowerCase() === defaultUser.toLowerCase() || cleanInput.toLowerCase() === defaultEmail.toLowerCase());
-      const isDefaultPass = (password === defaultPassword);
+      const isDefaultPass = timingSafeCompare(password, defaultPassword);
 
       if (isDefaultUser && isDefaultPass) {
         adminRecord = {

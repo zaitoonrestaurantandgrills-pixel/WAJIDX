@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { query } = require('../config/db');
+const { contactRateLimiter, sanitizeInput } = require('../middleware/security');
 
 // GET /api/settings - Public site settings
 router.get('/settings', async (req, res) => {
@@ -284,8 +285,8 @@ router.get('/projects/:slug', async (req, res) => {
   }
 });
 
-// POST /api/contact - Submit message from contact form
-router.post('/contact', async (req, res) => {
+// POST /api/contact - Submit message from contact form (rate limited & sanitized)
+router.post('/contact', contactRateLimiter, async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -294,15 +295,23 @@ router.post('/contact', async (req, res) => {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
+    if (!emailRegex.test(String(email).trim())) {
       return res.status(400).json({ success: false, error: 'Please provide a valid email address.' });
     }
 
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
+    const ip = req.headers['cf-connecting-ip'] || 
+               req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
+               req.socket.remoteAddress || 
+               null;
+
+    const cleanName = sanitizeInput(String(name).trim().slice(0, 100));
+    const cleanEmail = sanitizeInput(String(email).trim().slice(0, 150));
+    const cleanSubject = sanitizeInput(String(subject || 'Project Inquiry').trim().slice(0, 200));
+    const cleanMessage = sanitizeInput(String(message).trim().slice(0, 5000));
 
     const [result] = await query(
       'INSERT INTO wajidx_contact_messages (name, email, subject, message, ip_address) VALUES (?, ?, ?, ?, ?)',
-      [name.trim(), email.trim(), subject ? subject.trim() : 'Project Inquiry', message.trim(), ip]
+      [cleanName, cleanEmail, cleanSubject, cleanMessage, ip]
     );
 
     res.json({

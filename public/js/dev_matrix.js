@@ -45,16 +45,17 @@
 
     // Matrix Column Streams
     const matrixColumns = [];
-    const colSpacing = 42;
     function initMatrixStreams() {
       matrixColumns.length = 0;
+      const isMobile = width < 768;
+      const colSpacing = isMobile ? 54 : 42;
       const count = Math.floor(width / colSpacing);
       for (let i = 0; i < count; i++) {
         matrixColumns.push({
           x: i * colSpacing + 12,
           y: Math.random() * -height,
           speed: 1.0 + Math.random() * 2.2,
-          chars: Array.from({ length: 12 }, () => codeTokens[Math.floor(Math.random() * codeTokens.length)]),
+          chars: Array.from({ length: isMobile ? 8 : 12 }, () => codeTokens[Math.floor(Math.random() * codeTokens.length)]),
           opacity: 0.08 + Math.random() * 0.18,
           isHighlight: Math.random() > 0.82
         });
@@ -66,7 +67,9 @@
     const logicNodes = [];
     function initLogicNodes() {
       logicNodes.length = 0;
-      const nodeCount = Math.floor((width * height) / 45000);
+      const isMobile = width < 768;
+      const maxNodes = isMobile ? 22 : 48;
+      const nodeCount = Math.min(maxNodes, Math.floor((width * height) / (isMobile ? 36000 : 45000)));
       for (let i = 0; i < nodeCount; i++) {
         logicNodes.push({
           x: Math.random() * width,
@@ -184,7 +187,7 @@
       // RENDER CANVAS CODE STREAMS & CIRCUITS
       ctx.clearRect(0, 0, width, height);
 
-      // Draw Connected Logic Grid Circuit Lines
+      // Draw Connected Logic Grid Circuit Lines (with Fast Bounding Box & Squared Distance checks)
       ctx.lineWidth = 0.75;
       for (let i = 0; i < logicNodes.length; i++) {
         const node = logicNodes[i];
@@ -200,10 +203,13 @@
         for (let j = i + 1; j < logicNodes.length; j++) {
           const other = logicNodes[j];
           const dx = other.x - node.x;
+          if (dx > 130 || dx < -130) continue;
           const dy = other.y - node.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dy > 130 || dy < -130) continue;
 
-          if (dist < 130) {
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 16900) { // 130 * 130
+            const dist = Math.sqrt(distSq);
             const lineAlpha = (1 - dist / 130) * 0.14;
             ctx.strokeStyle = `rgba(38, 116, 231, ${lineAlpha})`;
             ctx.beginPath();
@@ -244,8 +250,12 @@
           const isHead = c === col.chars.length - 1;
           if (isHead) {
             ctx.fillStyle = col.isHighlight ? '#adc6ff' : 'rgba(38, 116, 231, 0.9)';
-            ctx.shadowColor = '#2674e7';
-            ctx.shadowBlur = col.isHighlight ? 8 : 4;
+            if (col.isHighlight) {
+              ctx.shadowColor = '#2674e7';
+              ctx.shadowBlur = 6;
+            } else {
+              ctx.shadowBlur = 0;
+            }
           } else {
             const fade = (c / col.chars.length) * col.opacity;
             ctx.fillStyle = col.isHighlight 
@@ -258,9 +268,27 @@
       }
       ctx.shadowBlur = 0;
 
+      if (!document.hidden) {
+        animationFrameId = requestAnimationFrame(renderDeveloperEnvironment);
+      } else {
+        animationFrameId = null;
+      }
+    }
+
+    // Page Visibility listener: Pause animation when tab is inactive to preserve CPU & battery
+    function handleVisibilityChange() {
+      if (!document.hidden && !animationFrameId) {
+        animationFrameId = requestAnimationFrame(renderDeveloperEnvironment);
+      } else if (document.hidden && animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (!document.hidden) {
       animationFrameId = requestAnimationFrame(renderDeveloperEnvironment);
     }
-    animationFrameId = requestAnimationFrame(renderDeveloperEnvironment);
 
     // Return cleanup callback
     return function cleanup() {
@@ -275,6 +303,7 @@
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   };
 })();

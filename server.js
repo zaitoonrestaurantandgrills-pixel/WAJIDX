@@ -16,18 +16,35 @@ const { testConnection, query } = require('./config/db');
 
 const basePath = typeof __dirname !== 'undefined' ? __dirname : (typeof process !== 'undefined' && process.cwd ? process.cwd() : '/');
 
+const { securityHeaders, apiRateLimiter } = require('./middleware/security');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SITE_URL = process.env.SITE_URL || `http://localhost:${PORT}`;
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+// Security: Disable X-Powered-By fingerprinting
+app.disable('x-powered-by');
+
+// Security: Apply HTTP Security Headers (nosniff, X-Frame-Options, HSTS, etc.)
+app.use(securityHeaders);
+
+// CORS Configuration
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+// Body Parsers with DoS-safe limits (2MB limit for standard JSON/URL-encoded)
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 // Static files (for local runtime)
 app.use(express.static(path.join(basePath, 'public')));
 app.use('/uploads', express.static(path.join(basePath, 'public/uploads')));
+
+// Rate limit API endpoints
+app.use('/api', apiRateLimiter);
 
 // Routes
 const authRoutes = require('./routes/auth');
