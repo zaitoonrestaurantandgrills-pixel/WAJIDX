@@ -1,9 +1,20 @@
 require('dotenv').config();
+const nodeCrypto = require('node:crypto');
+const bcrypt = require('bcryptjs');
+
+if (typeof bcrypt.setRandomFallback === 'function') {
+  bcrypt.setRandomFallback((len) => {
+    return Array.from(nodeCrypto.randomBytes(len));
+  });
+}
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const { testConnection, query } = require('./config/db');
+
+const basePath = typeof __dirname !== 'undefined' ? __dirname : (typeof process !== 'undefined' && process.cwd ? process.cwd() : '/');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,8 +26,8 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Static files (for local runtime)
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use(express.static(path.join(basePath, 'public')));
+app.use('/uploads', express.static(path.join(basePath, 'public/uploads')));
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -113,7 +124,7 @@ app.get('/sitemap.xml', async (req, res) => {
 // Single Page Application Fallback for Local Runtime
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
-    const indexPath = path.join(__dirname, 'public/index.html');
+    const indexPath = path.join(basePath, 'public/index.html');
     if (fs.existsSync(indexPath)) {
       return res.sendFile(indexPath);
     }

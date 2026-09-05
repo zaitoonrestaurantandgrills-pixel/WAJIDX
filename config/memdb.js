@@ -7,7 +7,7 @@ class InMemoryDatabase {
         id: 1,
         username: process.env.ADMIN_DEFAULT_USER || 'admin',
         email: process.env.ADMIN_DEFAULT_EMAIL || 'admin@wajidx.com',
-        password_hash: bcrypt.hashSync(process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@Wajidx2026!', 8),
+        password_hash: '$2b$08$alatD04ir5hp7FONhhxmleYTadUr6rZQupyCZ8nDRjYwnKZpFutJy', // Precomputed hash for default password (Admin@Wajidx2026!)
         name: 'WAJIDX Principal',
         role: 'superadmin',
         created_at: new Date()

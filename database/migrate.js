@@ -12,7 +12,8 @@ const fs = require('fs');
 const path = require('path');
 const { query, isPostgres } = require('../config/db');
 
-const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
+const basePath = typeof __dirname !== 'undefined' ? __dirname : (typeof process !== 'undefined' && process.cwd ? process.cwd() : '/');
+const MIGRATIONS_DIR = path.join(basePath, 'migrations');
 
 /**
  * Ensure the wajidx_schema_migrations table exists

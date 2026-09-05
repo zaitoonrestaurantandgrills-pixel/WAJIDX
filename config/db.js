@@ -5,6 +5,7 @@ const memdb = require('./memdb');
 
 const postgresUrl = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
 const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+const isEdge = typeof WebSocketPair !== 'undefined' || Boolean(process.env.CF_PAGES || process.env.CLOUDFLARE);
 
 let isPostgres = Boolean(postgresUrl);
 let pgPool = null;
@@ -26,7 +27,7 @@ if (isPostgres) {
   } catch (err) {
     console.error('[DB PG INIT ERROR]', err.message);
   }
-} else if (!isVercel) {
+} else if (!isVercel && !isEdge) {
   // Only initialize local MySQL pool if NOT running on Vercel serverless without DB
   try {
     mysqlPool = mysql.createPool({

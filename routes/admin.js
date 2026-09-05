@@ -11,7 +11,8 @@ const { uploadToStorage, isConfigured: isSupabaseConfigured } = require('../conf
 router.use(verifyAdmin);
 
 // Configure Multer in memory for cloud & local compatibility
-const uploadDir = path.join(__dirname, '../public/uploads');
+const basePath = typeof __dirname !== 'undefined' ? __dirname : (typeof process !== 'undefined' && process.cwd ? process.cwd() : '/');
+const uploadDir = path.join(basePath, '../public/uploads');
 
 const fileFilter = (req, file, cb) => {
   const allowed = /jpeg|jpg|png|webp|svg|gif/;
