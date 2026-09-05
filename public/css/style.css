@@ -305,3 +305,120 @@
   height: 10px;
   background-color: #16a34a;
 }
+
+/* ==========================================================================
+   Stitch Design: Animated Scroll & Cyber Developer Code Environment
+   ========================================================================== */
+
+/* Attention-Grabbing Explore Button Animations */
+@keyframes pulse-halo {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(38, 116, 231, 0.4), 0 0 35px rgba(38, 116, 231, 0.2), inset 0 0 12px rgba(173, 198, 255, 0.3);
+    border-color: rgba(173, 198, 255, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(38, 116, 231, 0.8), 0 0 55px rgba(38, 116, 231, 0.45), inset 0 0 20px rgba(173, 198, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.95);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes beam-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  40%, 100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+@keyframes arrow-nudge {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+.cta-explore-pulse {
+  animation: pulse-halo 3s ease-in-out infinite;
+}
+
+.cta-beam {
+  animation: beam-sweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.cta-arrow-bounce {
+  animation: arrow-nudge 1.6s ease-in-out infinite;
+}
+
+/* Cursor blink animation */
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-code-cursor {
+  animation: blinkCursor 0.9s infinite;
+}
+
+/* Floating Code Stream Drifts */
+@keyframes driftSlow {
+  0% { transform: translateY(0px) translateZ(0); }
+  50% { transform: translateY(-16px) translateZ(0); }
+  100% { transform: translateY(0px) translateZ(0); }
+}
+
+@keyframes driftRev {
+  0% { transform: translateY(0px) translateZ(0); }
+  50% { transform: translateY(14px) translateZ(0); }
+  100% { transform: translateY(0px) translateZ(0); }
+}
+
+.code-drift-1 {
+  animation: driftSlow 9s ease-in-out infinite;
+}
+.code-drift-2 {
+  animation: driftRev 11s ease-in-out infinite;
+}
+.code-drift-3 {
+  animation: driftSlow 14s ease-in-out infinite;
+}
+
+/* Dynamic 3D tilt perspective wrapper */
+.code-perspective-stage {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Parallax Depth Transform Classes Driven by JS */
+.parallax-depth-near {
+  will-change: transform;
+}
+.parallax-depth-mid {
+  will-change: transform;
+}
+.parallax-depth-far {
+  will-change: transform;
+}
+
+/* Scroll indicator bounce */
+@keyframes scrollDot {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 0.1;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+.animate-scroll-dot {
+  animation: scrollDot 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+

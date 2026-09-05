@@ -14,7 +14,8 @@
     selectedCategory: 'all',
     selectedSort: 'featured',
     shaderInstance: null,
-    universeCleanup: null
+    universeCleanup: null,
+    devMatrixCleanup: null
   };
 
   // Helper: Fetch JSON wrapper
@@ -233,73 +234,90 @@
         <!-- Abstract background bloom -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
-        <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
-          <!-- Left Column -->
-          <div class="flex flex-col gap-8 order-2 lg:order-1 animate-fade-in-up">
-            <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/50 backdrop-blur-md px-4 py-2 rounded-full self-start">
-              <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
-              <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
-            </div>
-
-            <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
-              We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container to-tertiary">Digital Solutions</span> That Move Businesses Forward.
-            </h1>
-
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
-              Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 pt-4">
-              <a class="bg-on-tertiary-container text-white px-8 py-4 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all duration-300 hover:shadow-[0_0_20px_rgba(38,116,231,0.2)] text-center flex items-center justify-center gap-2 group" href="/projects">
-                Explore Projects
-                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </a>
-              <a class="border border-outline-variant bg-transparent text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all duration-300 text-center" href="/contact">
-                Start a Conversation
-              </a>
-            </div>
-
-            <div class="flex items-center gap-6 mt-6 pt-6 border-t border-outline-variant/30">
-              <div class="flex flex-col gap-1">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
-                <span class="font-code-sm text-code-sm text-on-surface font-semibold">ERP &amp; POS Systems</span>
-              </div>
-              <div class="w-px h-8 bg-outline-variant/30"></div>
-              <div class="flex flex-col gap-1">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
-                <span class="font-code-sm text-code-sm text-on-surface font-semibold">Enterprise Automation</span>
-              </div>
-            </div>
+      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+        <!-- Left Column -->
+        <div class="flex flex-col gap-8 order-2 lg:order-1">
+          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-4 py-2 rounded-full self-start shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
           </div>
 
-          <!-- Right Column: Founder Portrait Card (From Stitch) -->
-          <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
-            <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
-            <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
-              <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
-                <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.2.0"/>
-                <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
-                <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
-                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
+          <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
+            We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container via-tertiary to-sky-300 drop-shadow-[0_0_20px_rgba(38,116,231,0.35)]">Digital Solutions</span> That Move Businesses Forward.
+          </h1>
+
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
+            Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
+          </p>
+
+          <!-- ACTION BUTTONS (WITH HIGH ATTENTION EXPLORE PROJECTS CTA) -->
+          <div class="flex flex-col sm:flex-row gap-5 pt-4 items-stretch sm:items-center">
+            <!-- Explore Projects CTA: Attention-Grabbing Glowing Pulse + Light Beam Sweep + Bounce Arrow -->
+            <div class="relative group/cta">
+              <div class="absolute -inset-1 bg-gradient-to-r from-on-tertiary-container via-cyan-400 to-tertiary rounded-lg blur-md opacity-70 group-hover/cta:opacity-100 transition duration-500 group-hover/cta:duration-200"></div>
+              <a class="relative cta-explore-pulse bg-on-tertiary-container hover:bg-[#1b65d6] text-white px-8 py-4 rounded-DEFAULT font-semibold transition-all duration-300 text-center flex items-center justify-center gap-3 overflow-hidden border border-tertiary/70 shadow-[0_0_25px_rgba(38,116,231,0.6)] group" href="/projects">
+                <!-- Radiant Gradient Light Beam Sweep Effect -->
+                <span class="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent cta-beam pointer-events-none"></span>
+                <span class="relative z-10 tracking-wide font-medium">Explore Projects</span>
+                <span class="relative z-10 material-symbols-outlined text-base group-hover:translate-x-1.5 transition-transform duration-300 cta-arrow-bounce">arrow_forward</span>
+              </a>
+            </div>
+            <a class="border border-outline-variant/60 bg-surface-dim/40 backdrop-blur-md text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container hover:bg-surface-container/50 transition-all duration-300 text-center" href="/contact">
+              Start a Conversation
+            </a>
+          </div>
+
+          <div class="flex items-center gap-6 mt-8 pt-8 border-t border-outline-variant/30">
+            <div class="flex flex-col gap-1">
+              <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
+              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
+            </div>
+            <div class="w-px h-8 bg-outline-variant/30"></div>
+            <div class="flex flex-col gap-1">
+              <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
+              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Founder Portrait Card (From Stitch) -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
+          <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
+          <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+            <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
+              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.3.0"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
+              <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
+              </div>
+              <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
+                    Wajid
+                    <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
+                  </div>
+                  <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5 font-mono">Founder &amp; Lead Systems Architect</p>
                 </div>
-                <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
-                  <div>
-                    <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
-                      Wajid
-                      <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
-                    </div>
-                    <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5">Founder &amp; Lead Systems Architect</p>
-                  </div>
-                  <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
-                    WX
-                  </div>
+                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
+                  WX
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <!-- Interactive Scroll Indicator with animated dot and scroll response -->
+      <div class="flex flex-col items-center justify-center pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
+        <a class="flex flex-col items-center gap-2 text-on-surface-variant hover:text-on-tertiary-container group transition-colors" href="/projects">
+          <span class="font-label-caps text-[10px] tracking-widest uppercase">Scroll to explore</span>
+          <div class="w-5 h-8 rounded-full border border-outline-variant/60 flex items-start justify-center p-1 group-hover:border-on-tertiary-container transition-colors">
+            <div class="w-1.5 h-2 bg-on-tertiary-container rounded-full animate-scroll-dot"></div>
+          </div>
+          <span class="material-symbols-outlined text-xs text-outline group-hover:text-on-tertiary-container group-hover:translate-y-0.5 transition-all">expand_more</span>
+        </a>
+      </div></section>
 
       <!-- Featured Projects Section -->
       <section class="py-24 px-4 md:px-xl border-t border-outline-variant/20 relative z-10 bg-surface-container-lowest/40">
@@ -400,6 +418,12 @@
         </div>
       </section>
     `;
+    }
+
+    // Initialize High-Tech Developer Environment (From Stitch Design: Animated Scroll Stitching)
+    if (window.initDeveloperEnvironment) {
+      if (state.devMatrixCleanup) state.devMatrixCleanup();
+      state.devMatrixCleanup = window.initDeveloperEnvironment();
     }
 
     // Initialize Full-Page 3D Web & Dev Universe (From Stitch Design)
