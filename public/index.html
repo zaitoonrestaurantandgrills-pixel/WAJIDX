@@ -88,7 +88,7 @@
     };
   </script>
 
-  <link rel="stylesheet" href="/css/style.css?v=2.3.0"/>
+  <link rel="stylesheet" href="/css/style.css?v=2.4.1"/>
 </head>
 <body class="bg-primary-container text-on-surface font-body-md text-body-md antialiased blueprint-grid min-h-screen relative overflow-x-hidden selection:bg-on-tertiary-container selection:text-white flex flex-col justify-between">
 
@@ -105,9 +105,9 @@
     <!-- Canvas Code Matrix Streams & Logic Nodes -->
     <canvas class="absolute inset-0 w-full h-full opacity-65" id="code-matrix-canvas"></canvas>
 
-    <!-- FLOATING DEVELOPER CODE FRAGMENTS (Multi-depth Parallax Layers) -->
+    <!-- FLOATING DEVELOPER CODE FRAGMENTS (Multi-depth Parallax Layers - Desktop Only) -->
     <!-- Layer 1: Background Deep Code Stream (Far Depth) -->
-    <div class="absolute inset-0 pointer-events-none parallax-depth-far" id="code-stream-far">
+    <div class="hidden lg:block absolute inset-0 pointer-events-none parallax-depth-far" id="code-stream-far">
       <!-- Code snippet top-left -->
       <div class="code-drift-1 absolute top-[14%] left-[2%] md:left-[5%] font-mono text-[11px] leading-relaxed bg-[#0b0f17]/60 backdrop-blur-md border border-[#2674e7]/20 p-3.5 rounded-lg shadow-2xl text-slate-400 max-w-[340px] opacity-75">
         <div class="flex items-center gap-1.5 pb-2 mb-2 border-b border-white/5 text-[9px] text-slate-500 font-label-caps">
@@ -138,7 +138,7 @@
     </div>
 
     <!-- Layer 2: Mid-Depth Code Logic Stream -->
-    <div class="absolute inset-0 pointer-events-none parallax-depth-mid" id="code-stream-mid">
+    <div class="hidden lg:block absolute inset-0 pointer-events-none parallax-depth-mid" id="code-stream-mid">
       <!-- Async build function near bottom left -->
       <div class="code-drift-3 absolute bottom-[18%] left-[4%] md:left-[8%] font-mono text-[11.5px] leading-relaxed bg-[#070a10]/80 backdrop-blur-md border border-[#adc6ff]/20 p-4 rounded-lg shadow-2xl text-slate-300 max-w-[390px] opacity-85">
         <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px] text-slate-400 font-label-caps">
@@ -177,7 +177,7 @@
       </div>
 
       <!-- Telemetry Badges with Scroll Status -->
-      <div class="absolute top-[18%] left-[50%] -translate-x-1/2 font-code-sm text-[10px] text-on-tertiary-container/50 select-none flex items-center gap-2 whitespace-nowrap">
+      <div class="hidden sm:flex absolute top-[18%] left-[50%] -translate-x-1/2 font-code-sm text-[10px] text-on-tertiary-container/50 select-none items-center gap-2 whitespace-nowrap">
         <span class="inline-block w-1.5 h-1.5 border border-on-tertiary-container/80 rotate-45"></span>
         <span>SYS.KERNEL // DEV_STREAM_ACTIVE [DEPTH: <span id="telemetry-depth">0.00</span> | SCROLL: <span id="telemetry-prog">0.0%</span>]</span>
       </div>
@@ -215,98 +215,135 @@
       </div>
 
       <!-- Mobile Menu Toggle Button -->
-      <button id="mobile-menu-toggle" class="md:hidden text-on-surface hover:text-on-tertiary-container transition-colors p-1.5">
-        <span class="material-symbols-outlined text-2xl">menu</span>
+      <button id="mobile-menu-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false" class="md:hidden text-on-surface hover:text-on-tertiary-container transition-colors p-2 rounded-DEFAULT focus:outline-none flex items-center justify-center">
+        <span id="mobile-menu-icon" class="material-symbols-outlined text-2xl">menu</span>
       </button>
     </div>
 
     <!-- Mobile Slideout Navigation Sheet -->
-    <div id="mobile-nav-sheet" class="hidden md:hidden border-t border-outline-variant/30 bg-surface-container-low/95 backdrop-blur-2xl px-6 py-6 flex flex-col gap-4">
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/">Home</a>
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/projects">Projects</a>
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/about">About</a>
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/services">Services</a>
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/process">Process</a>
-      <a class="text-base font-semibold text-on-surface py-2 border-b border-outline-variant/20" href="/contact">Contact</a>
-      <a class="mt-2 w-full bg-on-tertiary-container text-white py-3 rounded text-center font-semibold text-sm" href="/contact">
-        Let's Work Together
+    <div id="mobile-nav-sheet" class="hidden md:hidden border-t border-outline-variant/30 bg-surface/98 backdrop-blur-2xl px-5 py-5 flex flex-col gap-1.5 shadow-2xl transition-all duration-300">
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">home</span>
+          <span>Home</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/projects">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">inventory_2</span>
+          <span>Projects</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/about">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">info</span>
+          <span>About</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/services">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">terminal</span>
+          <span>Services</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/process">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">account_tree</span>
+          <span>Process</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="text-base font-semibold text-on-surface py-3 px-3 rounded-DEFAULT hover:bg-surface-container/60 hover:text-on-tertiary-container transition-colors flex items-center justify-between border-b border-outline-variant/15" href="/contact">
+        <span class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-lg text-on-tertiary-container">chat</span>
+          <span>Contact</span>
+        </span>
+        <span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+      </a>
+      <a class="mt-3 w-full bg-on-tertiary-container text-white py-3.5 rounded-DEFAULT text-center font-semibold text-sm flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-[0_0_20px_rgba(38,116,231,0.3)]" href="/contact">
+        <span>Let's Build Something</span>
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
       </a>
     </div>
   </header>
 
   <!-- Main View Container -->
   <main id="app-root" class="flex-grow pt-[72px]">
-    <!-- Hero Section (From Stitch Design) -->
-    <section class="relative min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-24 overflow-hidden" id="home">
+    <!-- Hero Section (From Stitch Design - Enhanced Mobile Responsiveness) -->
+    <section class="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
       <!-- Abstract background bloom -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
-      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-        <!-- Left Column -->
-        <div class="flex flex-col gap-8 order-2 lg:order-1">
-          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-4 py-2 rounded-full self-start shadow-sm">
+      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+        <!-- Left Column: Primary Pitch, Headline & Action Buttons (Rendered First for Immediate Impact) -->
+        <div class="flex flex-col gap-6 sm:gap-8 order-1 lg:order-1">
+          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-3.5 py-1.5 rounded-full self-start shadow-sm">
             <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
-            <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
+            <span class="font-label-caps text-[11px] sm:text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
           </div>
 
-          <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl lg:text-display-lg text-on-surface leading-[1.15] sm:leading-tight tracking-tight font-bold">
             We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container via-tertiary to-sky-300 drop-shadow-[0_0_20px_rgba(38,116,231,0.35)]">Digital Solutions</span> That Move Businesses Forward.
           </h1>
 
-          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
+          <p class="font-body-lg text-sm sm:text-base md:text-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-4 sm:pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
             Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
           </p>
 
           <!-- ACTION BUTTONS (WITH HIGH ATTENTION EXPLORE PROJECTS CTA) -->
-          <div class="flex flex-col sm:flex-row gap-5 pt-4 items-stretch sm:items-center">
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 pt-2 sm:pt-4 items-stretch sm:items-center">
             <!-- Explore Projects CTA: Attention-Grabbing Glowing Pulse + Light Beam Sweep + Bounce Arrow -->
-            <div class="relative group/cta">
+            <div class="relative group/cta w-full sm:w-auto">
               <div class="absolute -inset-1 bg-gradient-to-r from-on-tertiary-container via-cyan-400 to-tertiary rounded-lg blur-md opacity-70 group-hover/cta:opacity-100 transition duration-500 group-hover/cta:duration-200"></div>
-              <a class="relative cta-explore-pulse bg-on-tertiary-container hover:bg-[#1b65d6] text-white px-8 py-4 rounded-DEFAULT font-semibold transition-all duration-300 text-center flex items-center justify-center gap-3 overflow-hidden border border-tertiary/70 shadow-[0_0_25px_rgba(38,116,231,0.6)] group" href="/projects">
+              <a class="relative cta-explore-pulse bg-on-tertiary-container hover:bg-[#1b65d6] text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-DEFAULT font-semibold transition-all duration-300 text-center flex items-center justify-center gap-3 overflow-hidden border border-tertiary/70 shadow-[0_0_25px_rgba(38,116,231,0.6)] group w-full sm:w-auto min-h-[48px]" href="/projects">
                 <!-- Radiant Gradient Light Beam Sweep Effect -->
                 <span class="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent cta-beam pointer-events-none"></span>
                 <span class="relative z-10 tracking-wide font-medium">Explore Projects</span>
                 <span class="relative z-10 material-symbols-outlined text-base group-hover:translate-x-1.5 transition-transform duration-300 cta-arrow-bounce">arrow_forward</span>
               </a>
             </div>
-            <a class="border border-outline-variant/60 bg-surface-dim/40 backdrop-blur-md text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container hover:bg-surface-container/50 transition-all duration-300 text-center" href="/contact">
+            <a class="border border-outline-variant/60 bg-surface-dim/40 backdrop-blur-md text-on-surface px-6 sm:px-8 py-3.5 sm:py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container hover:bg-surface-container/50 transition-all duration-300 text-center w-full sm:w-auto min-h-[48px] flex items-center justify-center" href="/contact">
               Start a Conversation
             </a>
           </div>
 
-          <div class="flex items-center gap-6 mt-8 pt-8 border-t border-outline-variant/30">
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-6 mt-4 sm:mt-8 pt-6 sm:pt-8 border-t border-outline-variant/30">
             <div class="flex flex-col gap-1">
-              <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
-              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
+              <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">EXPERTISE</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
             </div>
-            <div class="w-px h-8 bg-outline-variant/30"></div>
+            <div class="hidden sm:block w-px h-8 bg-outline-variant/30"></div>
             <div class="flex flex-col gap-1">
-              <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
-              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
+              <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">FOCUS</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Founder Portrait Card (From Stitch) -->
-        <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
+        <div class="order-2 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible w-full">
           <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
-          <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+          <div class="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-2.5 sm:p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
             <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
-              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.3.0"/>
+              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.4.0"/>
               <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
-              <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
+              <div class="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/85 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
+                <span class="text-[10px] sm:text-[11px] font-medium tracking-wide">Available for Advisory</span>
               </div>
-              <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
-                    Wajid
-                    <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-3 sm:left-3 sm:right-3 p-3 sm:p-3.5 rounded-lg bg-surface-dim/95 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-2.5 sm:gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="text-on-surface font-headline-md font-semibold text-[15px] sm:text-[17px] leading-tight flex items-center gap-1.5 sm:gap-2 truncate">
+                    <span>Wajid</span>
+                    <span class="material-symbols-outlined text-on-tertiary-container text-[15px] sm:text-[16px] flex-shrink-0">verified</span>
                   </div>
-                  <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5 font-mono">Founder &amp; Lead Systems Architect</p>
+                  <p class="font-code-sm text-[11px] sm:text-[12px] text-on-surface-variant mt-0.5 font-mono truncate">Founder &amp; Lead Systems Architect</p>
                 </div>
-                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
+                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs flex-shrink-0">
                   WX
                 </div>
               </div>
@@ -316,7 +353,7 @@
       </div>
 
       <!-- Interactive Scroll Indicator with animated dot and scroll response -->
-      <div class="flex flex-col items-center justify-center pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
+      <div class="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
         <a class="flex flex-col items-center gap-2 text-on-surface-variant hover:text-on-tertiary-container group transition-colors" href="/projects">
           <span class="font-label-caps text-[10px] tracking-widest uppercase">Scroll to explore</span>
           <div class="w-5 h-8 rounded-full border border-outline-variant/60 flex items-start justify-center p-1 group-hover:border-on-tertiary-container transition-colors">
@@ -446,33 +483,33 @@
         </div>
 
         <!-- Links Columns -->
-        <div class="md:col-span-8 flex flex-wrap gap-12 md:gap-16 md:justify-end text-sm">
+        <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8 md:flex md:flex-wrap md:justify-end text-sm w-full">
           <div class="flex flex-col gap-3">
-            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest">Navigation</span>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/">Home</a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/projects">Projects</a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/about">About</a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/services">Services</a>
+            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest font-semibold">Navigation</span>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/">Home</a>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/projects">Projects</a>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/about">About</a>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/services">Services</a>
           </div>
 
           <div class="flex flex-col gap-3">
-            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest">Engineering</span>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/process">Process</a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/contact">Contact</a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="/admin">Admin Portal</a>
+            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest font-semibold">Engineering</span>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/process">Process</a>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/contact">Contact</a>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors py-0.5" href="/admin">Admin Portal</a>
           </div>
 
-          <div class="flex flex-col gap-3">
-            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest">Connect</span>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" href="https://github.com/wajidx" target="_blank" rel="noopener noreferrer">
+          <div class="flex flex-col gap-3 col-span-2 sm:col-span-1">
+            <span class="font-label-caps text-xs text-on-surface uppercase tracking-widest font-semibold">Connect</span>
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 py-0.5" href="https://github.com/wajidx" target="_blank" rel="noopener noreferrer">
               <span>GitHub</span>
               <span class="material-symbols-outlined text-xs">open_in_new</span>
             </a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" href="https://linkedin.com/company/wajidx" target="_blank" rel="noopener noreferrer">
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 py-0.5" href="https://linkedin.com/company/wajidx" target="_blank" rel="noopener noreferrer">
               <span>LinkedIn</span>
               <span class="material-symbols-outlined text-xs">open_in_new</span>
             </a>
-            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" href="https://x.com/wajidx" target="_blank" rel="noopener noreferrer">
+            <a class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 py-0.5" href="https://x.com/wajidx" target="_blank" rel="noopener noreferrer">
               <span>X (Twitter)</span>
               <span class="material-symbols-outlined text-xs">open_in_new</span>
             </a>
@@ -481,11 +518,11 @@
       </div>
 
       <!-- Bottom Bar -->
-      <div class="w-full flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-outline-variant/10 text-xs">
-        <span class="font-code-sm text-on-surface-variant text-center md:text-left">
+      <div class="w-full flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-outline-variant/10 text-xs text-center sm:text-left">
+        <span class="font-code-sm text-on-surface-variant">
           &copy; 2026 WAJIDX. All rights reserved. Precision Software Architecture.
         </span>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 flex-wrap justify-center">
           <span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant/30 text-[11px] font-code-sm text-on-surface-variant">v1.1.0</span>
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
@@ -499,8 +536,8 @@
   <!-- Scripts with Cache-Busting Query Strings -->
   <script src="/js/shader.js?v=2.4.0"></script>
   <script src="/js/universe3d.js?v=2.4.0"></script>
-  <script src="/js/dev_matrix.js?v=2.4.0"></script>
-  <script src="/js/app.js?v=2.4.0"></script>
+  <script src="/js/dev_matrix.js?v=2.4.1"></script>
+  <script src="/js/app.js?v=2.4.1"></script>
   <script src="/js/admin.js?v=2.4.0"></script>
 
   <script>
@@ -525,16 +562,44 @@
         header.classList.remove('shadow-lg', 'shadow-black/50', 'bg-surface/95');
         header.classList.add('bg-surface/80');
       }
-    });
+    }, { passive: true });
 
-    // Mobile nav toggle
+    // Mobile nav toggle with smooth state management
     const mobBtn = document.getElementById('mobile-menu-toggle');
     const mobSheet = document.getElementById('mobile-nav-sheet');
+    const mobIcon = document.getElementById('mobile-menu-icon');
     if (mobBtn && mobSheet) {
-      mobBtn.onclick = () => mobSheet.classList.toggle('hidden');
-      mobSheet.querySelectorAll('a').forEach(a => {
-        a.onclick = () => mobSheet.classList.add('hidden');
+      function toggleMobileMenu(forceClose) {
+        const isOpen = !mobSheet.classList.contains('hidden');
+        if (forceClose === true || isOpen) {
+          mobSheet.classList.add('hidden');
+          mobBtn.setAttribute('aria-expanded', 'false');
+          if (mobIcon) mobIcon.textContent = 'menu';
+        } else {
+          mobSheet.classList.remove('hidden');
+          mobBtn.setAttribute('aria-expanded', 'true');
+          if (mobIcon) mobIcon.textContent = 'close';
+        }
+      }
+
+      mobBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMobileMenu();
       });
+
+      document.addEventListener('click', (e) => {
+        if (!mobSheet.classList.contains('hidden') && !mobSheet.contains(e.target) && !mobBtn.contains(e.target)) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      mobSheet.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          toggleMobileMenu(true);
+        });
+      });
+
+      window.closeMobileNav = () => toggleMobileMenu(true);
     }
   </script>
 </body>

@@ -155,22 +155,25 @@
       const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1);
       const progress = Math.min(Math.max(currentScrollY / maxScroll, 0), 1);
 
-      // Calculate Mouse 3D Tilt offsets
-      const tiltX = (smoothMouseY / height - 0.5) * 12; // deg
-      const tiltY = (smoothMouseX / width - 0.5) * -14; // deg
+      // Calculate Mouse 3D Tilt offsets (safely disable on mobile/touch screens)
+      const isMobile = width < 1024;
+      const tiltX = isMobile ? 0 : (smoothMouseY / height - 0.5) * 12; // deg
+      const tiltY = isMobile ? 0 : (smoothMouseX / width - 0.5) * -14; // deg
 
-      // Apply dynamic parallax depth shifts to developer code layers
-      if (streamFar) {
-        const farY = currentScrollY * -0.15;
-        streamFar.style.transform = `translate3d(${tiltY * 0.8}px, ${farY}px, -120px) rotateX(${tiltX * 0.4}deg) rotateY(${tiltY * 0.4}deg)`;
-      }
-      if (streamMid) {
-        const midY = currentScrollY * -0.32;
-        streamMid.style.transform = `translate3d(${tiltY * 1.5}px, ${midY}px, -40px) rotateX(${tiltX * 0.6}deg) rotateY(${tiltY * 0.6}deg)`;
-      }
-      if (streamNear) {
-        const nearY = currentScrollY * -0.52;
-        streamNear.style.transform = `translate3d(${tiltY * 2.4}px, ${nearY}px, 20px) rotateX(${tiltX * 0.8}deg) rotateY(${tiltY * 0.8}deg)`;
+      // Apply dynamic parallax depth shifts to developer code layers (desktop only)
+      if (!isMobile) {
+        if (streamFar) {
+          const farY = currentScrollY * -0.15;
+          streamFar.style.transform = `translate3d(${tiltY * 0.8}px, ${farY}px, -120px) rotateX(${tiltX * 0.4}deg) rotateY(${tiltY * 0.4}deg)`;
+        }
+        if (streamMid) {
+          const midY = currentScrollY * -0.32;
+          streamMid.style.transform = `translate3d(${tiltY * 1.5}px, ${midY}px, -40px) rotateX(${tiltX * 0.6}deg) rotateY(${tiltY * 0.6}deg)`;
+        }
+        if (streamNear) {
+          const nearY = currentScrollY * -0.52;
+          streamNear.style.transform = `translate3d(${tiltY * 2.4}px, ${nearY}px, 20px) rotateX(${tiltX * 0.8}deg) rotateY(${tiltY * 0.8}deg)`;
+        }
       }
 
       // Telemetry update

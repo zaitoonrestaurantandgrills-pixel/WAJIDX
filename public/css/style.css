@@ -422,3 +422,56 @@
   animation: scrollDot 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
+/* ==========================================================================
+   Mobile Responsiveness & Ergonomics Enhancements
+   ========================================================================== */
+
+/* Universal mobile touch ergonomics */
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+/* Smooth horizontal touch scroll containers */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area support for notch displays */
+@supports (padding: max(0px)) {
+  #site-header {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+  #site-footer {
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Mobile Portrait Card Responsive Fluidity */
+@media (max-width: 767px) {
+  .hero-portrait-frame {
+    border-radius: 1rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 30px rgba(38, 116, 231, 0.15);
+  }
+
+  .glow-card {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Prevent any floating perspective overflow on phones */
+  .code-perspective-stage {
+    perspective: none;
+  }
+}
+
+

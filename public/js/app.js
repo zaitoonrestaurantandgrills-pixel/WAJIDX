@@ -168,6 +168,11 @@
     if (siteHeader) siteHeader.style.display = 'block';
     if (siteFooter) siteFooter.style.display = 'block';
 
+    // Auto-close mobile navigation drawer if open
+    if (window.closeMobileNav) {
+      window.closeMobileNav();
+    }
+
     updateNavActive(fullPath);
     window.scrollTo({ top: 0, behavior: 'instant' });
 
@@ -208,6 +213,7 @@
       ) {
         link.onclick = (e) => {
           e.preventDefault();
+          if (window.closeMobileNav) window.closeMobileNav();
           if (window.location.pathname !== href) {
             window.history.pushState({}, '', href);
             router();
@@ -229,77 +235,77 @@
     const alreadyRendered = container.querySelector('#home');
     if (!alreadyRendered) {
       container.innerHTML = `
-      <!-- Hero Section (From Stitch Design) -->
-      <section class="relative min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-24 overflow-hidden" id="home">
+      <!-- Hero Section (From Stitch Design - Enhanced Mobile Responsiveness) -->
+      <section class="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
         <!-- Abstract background bloom -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
-      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-        <!-- Left Column -->
-        <div class="flex flex-col gap-8 order-2 lg:order-1">
-          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-4 py-2 rounded-full self-start shadow-sm">
+      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+        <!-- Left Column: Primary Pitch, Headline & Action Buttons (Rendered First for Immediate Impact) -->
+        <div class="flex flex-col gap-6 sm:gap-8 order-1 lg:order-1">
+          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-3.5 py-1.5 rounded-full self-start shadow-sm">
             <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
-            <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
+            <span class="font-label-caps text-[11px] sm:text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
           </div>
 
-          <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl lg:text-display-lg text-on-surface leading-[1.15] sm:leading-tight tracking-tight font-bold">
             We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container via-tertiary to-sky-300 drop-shadow-[0_0_20px_rgba(38,116,231,0.35)]">Digital Solutions</span> That Move Businesses Forward.
           </h1>
 
-          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
+          <p class="font-body-lg text-sm sm:text-base md:text-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-4 sm:pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
             Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
           </p>
 
           <!-- ACTION BUTTONS (WITH HIGH ATTENTION EXPLORE PROJECTS CTA) -->
-          <div class="flex flex-col sm:flex-row gap-5 pt-4 items-stretch sm:items-center">
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 pt-2 sm:pt-4 items-stretch sm:items-center">
             <!-- Explore Projects CTA: Attention-Grabbing Glowing Pulse + Light Beam Sweep + Bounce Arrow -->
-            <div class="relative group/cta">
+            <div class="relative group/cta w-full sm:w-auto">
               <div class="absolute -inset-1 bg-gradient-to-r from-on-tertiary-container via-cyan-400 to-tertiary rounded-lg blur-md opacity-70 group-hover/cta:opacity-100 transition duration-500 group-hover/cta:duration-200"></div>
-              <a class="relative cta-explore-pulse bg-on-tertiary-container hover:bg-[#1b65d6] text-white px-8 py-4 rounded-DEFAULT font-semibold transition-all duration-300 text-center flex items-center justify-center gap-3 overflow-hidden border border-tertiary/70 shadow-[0_0_25px_rgba(38,116,231,0.6)] group" href="/projects">
+              <a class="relative cta-explore-pulse bg-on-tertiary-container hover:bg-[#1b65d6] text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-DEFAULT font-semibold transition-all duration-300 text-center flex items-center justify-center gap-3 overflow-hidden border border-tertiary/70 shadow-[0_0_25px_rgba(38,116,231,0.6)] group w-full sm:w-auto min-h-[48px]" href="/projects">
                 <!-- Radiant Gradient Light Beam Sweep Effect -->
                 <span class="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent cta-beam pointer-events-none"></span>
                 <span class="relative z-10 tracking-wide font-medium">Explore Projects</span>
                 <span class="relative z-10 material-symbols-outlined text-base group-hover:translate-x-1.5 transition-transform duration-300 cta-arrow-bounce">arrow_forward</span>
               </a>
             </div>
-            <a class="border border-outline-variant/60 bg-surface-dim/40 backdrop-blur-md text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container hover:bg-surface-container/50 transition-all duration-300 text-center" href="/contact">
+            <a class="border border-outline-variant/60 bg-surface-dim/40 backdrop-blur-md text-on-surface px-6 sm:px-8 py-3.5 sm:py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container hover:bg-surface-container/50 transition-all duration-300 text-center w-full sm:w-auto min-h-[48px] flex items-center justify-center" href="/contact">
               Start a Conversation
             </a>
           </div>
 
-          <div class="flex items-center gap-6 mt-8 pt-8 border-t border-outline-variant/30">
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-6 mt-4 sm:mt-8 pt-6 sm:pt-8 border-t border-outline-variant/30">
             <div class="flex flex-col gap-1">
-              <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
-              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
+              <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">EXPERTISE</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
             </div>
-            <div class="w-px h-8 bg-outline-variant/30"></div>
+            <div class="hidden sm:block w-px h-8 bg-outline-variant/30"></div>
             <div class="flex flex-col gap-1">
-              <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
-              <span class="font-code-sm text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
+              <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">FOCUS</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Founder Portrait Card (From Stitch) -->
-        <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
+        <div class="order-2 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible w-full">
           <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
-          <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+          <div class="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-2.5 sm:p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
             <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
-              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.3.0"/>
+              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.4.0"/>
               <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
-              <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
+              <div class="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/85 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
+                <span class="text-[10px] sm:text-[11px] font-medium tracking-wide">Available for Advisory</span>
               </div>
-              <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
-                    Wajid
-                    <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-3 sm:left-3 sm:right-3 p-3 sm:p-3.5 rounded-lg bg-surface-dim/95 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-2.5 sm:gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="text-on-surface font-headline-md font-semibold text-[15px] sm:text-[17px] leading-tight flex items-center gap-1.5 sm:gap-2 truncate">
+                    <span>Wajid</span>
+                    <span class="material-symbols-outlined text-on-tertiary-container text-[15px] sm:text-[16px] flex-shrink-0">verified</span>
                   </div>
-                  <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5 font-mono">Founder &amp; Lead Systems Architect</p>
+                  <p class="font-code-sm text-[11px] sm:text-[12px] text-on-surface-variant mt-0.5 font-mono truncate">Founder &amp; Lead Systems Architect</p>
                 </div>
-                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
+                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs flex-shrink-0">
                   WX
                 </div>
               </div>
@@ -309,7 +315,7 @@
       </div>
 
       <!-- Interactive Scroll Indicator with animated dot and scroll response -->
-      <div class="flex flex-col items-center justify-center pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
+      <div class="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
         <a class="flex flex-col items-center gap-2 text-on-surface-variant hover:text-on-tertiary-container group transition-colors" href="/projects">
           <span class="font-label-caps text-[10px] tracking-widest uppercase">Scroll to explore</span>
           <div class="w-5 h-8 rounded-full border border-outline-variant/60 flex items-start justify-center p-1 group-hover:border-on-tertiary-container transition-colors">
@@ -774,32 +780,32 @@
             ` : ''}
           </div>
 
-          <h1 class="font-display-lg text-4xl md:text-5xl lg:text-6xl text-on-surface font-bold tracking-tight">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-on-surface font-bold tracking-tight">
             ${escapeHtml(proj.title)}
           </h1>
 
-          <p class="font-body-lg text-lg md:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
+          <p class="font-body-lg text-base sm:text-lg md:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
             ${escapeHtml(proj.short_description)}
           </p>
 
           <!-- Action Buttons (Rendered only when valid URLs exist) -->
-          <div class="flex flex-wrap items-center gap-4 pt-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
             ${proj.live_url ? `
-              <a href="${escapeHtml(proj.live_url)}" target="_blank" rel="noopener noreferrer" class="bg-on-tertiary-container text-white px-6 py-3 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all flex items-center gap-2 hover:shadow-[0_0_20px_rgba(38,116,231,0.3)] glow-button">
+              <a href="${escapeHtml(proj.live_url)}" target="_blank" rel="noopener noreferrer" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(38,116,231,0.3)] glow-button w-full sm:w-auto text-center">
                 Visit Live Project
                 <span class="material-symbols-outlined text-lg">open_in_new</span>
               </a>
             ` : ''}
 
             ${proj.github_url ? `
-              <a href="${escapeHtml(proj.github_url)}" target="_blank" rel="noopener noreferrer" class="border border-outline-variant bg-surface-container-low text-on-surface px-6 py-3 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all flex items-center gap-2">
+              <a href="${escapeHtml(proj.github_url)}" target="_blank" rel="noopener noreferrer" class="border border-outline-variant bg-surface-container-low text-on-surface px-6 py-3.5 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center">
                 <span class="material-symbols-outlined text-lg">code</span>
                 View Source
               </a>
             ` : ''}
 
             ${proj.docs_url ? `
-              <a href="${escapeHtml(proj.docs_url)}" target="_blank" rel="noopener noreferrer" class="border border-outline-variant/60 text-on-surface-variant px-5 py-3 rounded-DEFAULT font-medium hover:text-on-surface transition-all flex items-center gap-2 text-sm">
+              <a href="${escapeHtml(proj.docs_url)}" target="_blank" rel="noopener noreferrer" class="border border-outline-variant/60 text-on-surface-variant px-5 py-3.5 rounded-DEFAULT font-medium hover:text-on-surface transition-all flex items-center justify-center gap-2 text-sm w-full sm:w-auto text-center">
                 <span class="material-symbols-outlined text-lg">menu_book</span>
                 Documentation
               </a>
@@ -1064,29 +1070,29 @@
     });
 
     container.innerHTML = `
-      <section class="max-w-container-max mx-auto px-4 md:px-xl py-16 animate-fade-in-up">
+      <section class="max-w-container-max mx-auto px-4 md:px-xl py-10 sm:py-16 animate-fade-in-up">
         <!-- Header -->
-        <div class="mb-16 border-b border-outline-variant/30 pb-10">
+        <div class="mb-10 sm:mb-16 border-b border-outline-variant/30 pb-8 sm:pb-10">
           <div class="flex items-center gap-2 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
             <span class="font-label-caps text-label-caps text-on-tertiary-container uppercase tracking-widest">ABOUT THE STUDIO</span>
           </div>
-          <h1 class="font-display-lg text-4xl md:text-6xl font-bold text-on-surface mb-6">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-6xl font-bold text-on-surface mb-4 sm:mb-6">
             Precision Minimalism &amp; High-Performance Software.
           </h1>
-          <p class="font-body-lg text-xl text-on-surface-variant max-w-3xl leading-relaxed">
+          <p class="font-body-lg text-base sm:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
             WAJIDX is a specialized software and digital engineering brand. We create practical business systems, automated POS pipelines, and edge AI applications that eliminate friction and unlock scale.
           </p>
         </div>
 
         <!-- Founder & Principal Architect Showcase -->
-        <div class="mb-20 p-8 md:p-12 rounded-2xl bg-gradient-to-br from-surface-container-low via-surface-container-lowest to-surface-container-low border border-outline-variant/40 shadow-2xl relative overflow-hidden">
+        <div class="mb-12 sm:mb-20 p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-surface-container-low via-surface-container-lowest to-surface-container-low border border-outline-variant/40 shadow-2xl relative overflow-hidden">
           <div class="absolute top-0 right-0 w-96 h-96 bg-on-tertiary-container/10 rounded-full blur-3xl pointer-events-none"></div>
           
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-center relative z-10">
             <!-- Left: Founder Portrait Frame -->
             <div class="lg:col-span-4 flex flex-col items-center">
-              <div class="relative w-full max-w-[290px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-surface-container-lowest group">
+              <div class="relative w-full max-w-[260px] sm:max-w-[290px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-surface-container-lowest group">
                 <div class="hero-corner-tl"></div>
                 <div class="hero-corner-tr"></div>
                 <div class="hero-corner-bl"></div>
@@ -1113,11 +1119,11 @@
                 <span class="font-label-caps text-xs text-on-tertiary-container tracking-widest uppercase font-semibold">STUDIO LEADERSHIP</span>
               </div>
               
-              <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-on-surface tracking-tight">
+              <h2 class="font-display-lg text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface tracking-tight">
                 Architected &amp; Engineered by Wajid.
               </h2>
 
-              <p class="font-body-lg text-base md:text-lg text-on-surface-variant leading-relaxed">
+              <p class="font-body-lg text-sm sm:text-base md:text-lg text-on-surface-variant leading-relaxed">
                 "Software in mission-critical environments must never be brittle or sluggish. When hundreds of live orders are firing across kitchen display stations, or edge camera feeds are running neural attendance verifications, precision engineering is non-negotiable."
               </p>
 
@@ -1143,12 +1149,12 @@
                 </div>
               </div>
 
-              <div class="pt-2 flex flex-wrap items-center gap-4">
-                <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(38,116,231,0.3)]">
+              <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-lg font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(38,116,231,0.3)] w-full sm:w-auto text-center">
                   <span>Schedule Architectural Review</span>
                   <span class="material-symbols-outlined text-base">arrow_forward</span>
                 </a>
-                <a href="/projects" class="text-on-surface-variant hover:text-white text-sm font-semibold flex items-center gap-1.5 transition-colors">
+                <a href="/projects" class="text-on-surface-variant hover:text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors py-2 w-full sm:w-auto text-center">
                   <span>View Project Case Studies</span>
                   <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </a>
@@ -1235,32 +1241,32 @@
     });
 
     container.innerHTML = `
-      <section class="max-w-container-max mx-auto px-4 md:px-xl py-16 animate-fade-in-up">
+      <section class="max-w-container-max mx-auto px-4 md:px-xl py-10 sm:py-16 animate-fade-in-up">
         <!-- Header -->
-        <div class="mb-16 border-b border-outline-variant/30 pb-10">
+        <div class="mb-10 sm:mb-16 border-b border-outline-variant/30 pb-8 sm:pb-10">
           <div class="flex items-center gap-2 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
             <span class="font-label-caps text-label-caps text-on-tertiary-container uppercase tracking-widest">CORE OFFERINGS</span>
           </div>
-          <h1 class="font-display-lg text-4xl md:text-6xl font-bold text-on-surface mb-6">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-6xl font-bold text-on-surface mb-4 sm:mb-6">
             Engineered Software Services
           </h1>
-          <p class="font-body-lg text-xl text-on-surface-variant max-w-3xl leading-relaxed">
+          <p class="font-body-lg text-base sm:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
             We provide end-to-end engineering from architectural planning and database modeling to high-throughput deployment and operational maintenance.
           </p>
         </div>
 
         <!-- Service Blocks -->
-        <div class="flex flex-col gap-12 mb-20">
+        <div class="flex flex-col gap-8 sm:gap-12 mb-16 sm:mb-20">
           <!-- Service 1 -->
-          <div class="p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="p-6 sm:p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             <div class="lg:col-span-8 flex flex-col gap-4">
               <div class="flex items-center gap-2 text-on-tertiary-container font-label-caps text-xs">
                 <span class="material-symbols-outlined text-lg">point_of_sale</span>
                 SERVICE // 01
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Custom POS &amp; Hospitality Engines</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Specialized point-of-sale platforms for restaurants and retail. Features include sub-second dispatch, live recipe Bill-of-Materials depletion, multi-station Kitchen Display Systems, thermal printer routing, and blind shift drop auditing.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
@@ -1269,8 +1275,8 @@
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">KDS Multi-Station</span>
               </div>
             </div>
-            <div class="lg:col-span-4 flex justify-start lg:justify-end">
-              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center gap-2">
+            <div class="lg:col-span-4 flex justify-start lg:justify-end w-full lg:w-auto">
+              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center">
                 Inquire Service
                 <span class="material-symbols-outlined text-base">arrow_forward</span>
               </a>
@@ -1278,14 +1284,14 @@
           </div>
 
           <!-- Service 2 -->
-          <div class="p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="p-6 sm:p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             <div class="lg:col-span-8 flex flex-col gap-4">
               <div class="flex items-center gap-2 text-on-tertiary-container font-label-caps text-xs">
                 <span class="material-symbols-outlined text-lg">smart_toy</span>
                 SERVICE // 02
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Computer Vision &amp; Edge AI Systems</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 High-throughput visual recognition pipelines executed directly on edge hardware. Implement biometric attendance, automated quality control inspection, anti-spoofing verification, and continuous video stream classification.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
@@ -1294,8 +1300,8 @@
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">Automated Payroll Sync</span>
               </div>
             </div>
-            <div class="lg:col-span-4 flex justify-start lg:justify-end">
-              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center gap-2">
+            <div class="lg:col-span-4 flex justify-start lg:justify-end w-full lg:w-auto">
+              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center">
                 Inquire Service
                 <span class="material-symbols-outlined text-base">arrow_forward</span>
               </a>
@@ -1303,14 +1309,14 @@
           </div>
 
           <!-- Service 3 -->
-          <div class="p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="p-6 sm:p-8 md:p-12 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             <div class="lg:col-span-8 flex flex-col gap-4">
               <div class="flex items-center gap-2 text-on-tertiary-container font-label-caps text-xs">
                 <span class="material-symbols-outlined text-lg">schema</span>
                 SERVICE // 03
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Enterprise Business Software &amp; ERP</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Centralized ERP and inventory management platforms. Seamlessly track multi-warehouse inventory, procurement purchase orders, supplier price variance, and automated accounts reconciliation.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
@@ -1319,8 +1325,8 @@
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">Role Audits</span>
               </div>
             </div>
-            <div class="lg:col-span-4 flex justify-start lg:justify-end">
-              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center gap-2">
+            <div class="lg:col-span-4 flex justify-start lg:justify-end w-full lg:w-auto">
+              <a href="/contact" class="bg-on-tertiary-container text-white px-6 py-3.5 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center">
                 Inquire Service
                 <span class="material-symbols-outlined text-base">arrow_forward</span>
               </a>
@@ -1341,88 +1347,88 @@
     });
 
     container.innerHTML = `
-      <section class="max-w-container-max mx-auto px-4 md:px-xl py-16 animate-fade-in-up">
+      <section class="max-w-container-max mx-auto px-4 md:px-xl py-10 sm:py-16 animate-fade-in-up">
         <!-- Header -->
-        <div class="mb-16 border-b border-outline-variant/30 pb-10">
+        <div class="mb-10 sm:mb-16 border-b border-outline-variant/30 pb-8 sm:pb-10">
           <div class="flex items-center gap-2 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
             <span class="font-label-caps text-label-caps text-on-tertiary-container uppercase tracking-widest">METHODOLOGY</span>
           </div>
-          <h1 class="font-display-lg text-4xl md:text-6xl font-bold text-on-surface mb-6">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-6xl font-bold text-on-surface mb-4 sm:mb-6">
             The WAJIDX Engineering Lifecycle
           </h1>
-          <p class="font-body-lg text-xl text-on-surface-variant max-w-3xl leading-relaxed">
+          <p class="font-body-lg text-base sm:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
             A disciplined, 5-stage architectural process that turns complex operational chaos into rock-solid software systems.
           </p>
         </div>
 
         <!-- 5 Steps Timeline -->
-        <div class="flex flex-col gap-10 mb-20 relative">
+        <div class="flex flex-col gap-6 sm:gap-10 mb-16 sm:mb-20 relative">
           <!-- Step 1 -->
-          <div class="p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-8 items-start">
-            <div class="w-16 h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-2xl font-bold flex-shrink-0">
+          <div class="p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-6 sm:gap-8 items-start">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-xl sm:text-2xl font-bold flex-shrink-0">
               01
             </div>
-            <div class="flex-1 flex flex-col gap-3">
+            <div class="flex-1 flex flex-col gap-2 sm:gap-3">
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE ONE // SCOPING</span>
-              <h2 class="font-headline-md text-2xl font-bold text-on-surface">Operational Discovery &amp; Bottleneck Analysis</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">Operational Discovery &amp; Bottleneck Analysis</h2>
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 We sit with your operational managers, operators, and staff to uncover the exact friction points, latency bottlenecks, and manual error vulnerabilities in existing workflows.
               </p>
             </div>
           </div>
 
           <!-- Step 2 -->
-          <div class="p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-8 items-start">
-            <div class="w-16 h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-2xl font-bold flex-shrink-0">
+          <div class="p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-6 sm:gap-8 items-start">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-xl sm:text-2xl font-bold flex-shrink-0">
               02
             </div>
-            <div class="flex-1 flex flex-col gap-3">
+            <div class="flex-1 flex flex-col gap-2 sm:gap-3">
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE TWO // BLUEPRINT</span>
-              <h2 class="font-headline-md text-2xl font-bold text-on-surface">System Architecture &amp; Database Modeling</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">System Architecture &amp; Database Modeling</h2>
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Before writing a line of frontend code, we construct complete relational SQL schemas, API specifications, edge fallback protocols, and security authorization matrices.
               </p>
             </div>
           </div>
 
           <!-- Step 3 -->
-          <div class="p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-8 items-start">
-            <div class="w-16 h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-2xl font-bold flex-shrink-0">
+          <div class="p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-6 sm:gap-8 items-start">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-xl sm:text-2xl font-bold flex-shrink-0">
               03
             </div>
-            <div class="flex-1 flex flex-col gap-3">
+            <div class="flex-1 flex flex-col gap-2 sm:gap-3">
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE THREE // BUILD</span>
-              <h2 class="font-headline-md text-2xl font-bold text-on-surface">Iterative Sprint Builds &amp; Prototype Lab</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">Iterative Sprint Builds &amp; Prototype Lab</h2>
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Rapid bi-weekly milestone builds deploying live test environments for stakeholder review. Direct feedback loops eliminate scope drift and ensure ergonomic interface design.
               </p>
             </div>
           </div>
 
           <!-- Step 4 -->
-          <div class="p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-8 items-start">
-            <div class="w-16 h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-2xl font-bold flex-shrink-0">
+          <div class="p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-6 sm:gap-8 items-start">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-xl sm:text-2xl font-bold flex-shrink-0">
               04
             </div>
-            <div class="flex-1 flex flex-col gap-3">
+            <div class="flex-1 flex flex-col gap-2 sm:gap-3">
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE FOUR // VALIDATION</span>
-              <h2 class="font-headline-md text-2xl font-bold text-on-surface">Load Testing, Edge Simulation &amp; Hardening</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">Load Testing, Edge Simulation &amp; Hardening</h2>
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Simulated network failure tests, high-concurrency order dispatch simulations, biometric spoof tests, and strict vulnerability audits to guarantee unshakeable stability.
               </p>
             </div>
           </div>
 
           <!-- Step 5 -->
-          <div class="p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-8 items-start">
-            <div class="w-16 h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-2xl font-bold flex-shrink-0">
+          <div class="p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30 glow-card flex flex-col md:flex-row gap-6 sm:gap-8 items-start">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/30 flex items-center justify-center text-on-tertiary-container font-headline-lg text-xl sm:text-2xl font-bold flex-shrink-0">
               05
             </div>
-            <div class="flex-1 flex flex-col gap-3">
+            <div class="flex-1 flex flex-col gap-2 sm:gap-3">
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE FIVE // DEPLOYMENT</span>
-              <h2 class="font-headline-md text-2xl font-bold text-on-surface">Production Rollout &amp; Continuous Evolution</h2>
-              <p class="text-on-surface-variant text-base leading-relaxed">
+              <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">Production Rollout &amp; Continuous Evolution</h2>
+              <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
                 Live deployment with automated backup scripts, real-time health monitoring, staff onboarding support, and planned incremental feature roadmaps.
               </p>
             </div>
@@ -1446,25 +1452,25 @@
     const address = state.settings.contact_address || 'Karachi, Pakistan';
 
     container.innerHTML = `
-      <section class="max-w-container-max mx-auto px-4 md:px-xl py-16 animate-fade-in-up">
+      <section class="max-w-container-max mx-auto px-4 md:px-xl py-10 sm:py-16 animate-fade-in-up">
         <!-- Header -->
-        <div class="mb-16 border-b border-outline-variant/30 pb-10">
+        <div class="mb-10 sm:mb-16 border-b border-outline-variant/30 pb-8 sm:pb-10">
           <div class="flex items-center gap-2 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
             <span class="font-label-caps text-label-caps text-on-tertiary-container uppercase tracking-widest">GET IN TOUCH</span>
           </div>
-          <h1 class="font-display-lg text-4xl md:text-6xl font-bold text-on-surface mb-4">
+          <h1 class="font-display-lg text-3xl sm:text-4xl md:text-6xl font-bold text-on-surface mb-4">
             Let's Engineer Something Exceptional.
           </h1>
-          <p class="font-body-lg text-xl text-on-surface-variant max-w-2xl leading-relaxed">
+          <p class="font-body-lg text-base sm:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
             Have a project in mind, an operational bottleneck to solve, or want to discuss enterprise architecture? Send us a direct inquiry below.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 mb-16 sm:mb-20">
           <!-- Left: Interactive Form -->
-          <div class="lg:col-span-7 p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30">
-            <h2 class="font-headline-md text-2xl font-bold text-on-surface mb-6">Send an Inquiry</h2>
+          <div class="lg:col-span-7 p-6 sm:p-8 md:p-10 rounded-xl bg-surface-container-low border border-outline-variant/30">
+            <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface mb-6">Send an Inquiry</h2>
             
             <form id="contact-form" class="flex flex-col gap-6">
               <div id="contact-form-alert" class="hidden p-4 rounded-DEFAULT text-sm"></div>
@@ -1517,7 +1523,7 @@
               <button 
                 type="submit" 
                 id="contact-submit-btn"
-                class="bg-on-tertiary-container text-white py-4 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(38,116,231,0.3)] glow-button"
+                class="bg-on-tertiary-container text-white py-4 rounded-DEFAULT font-semibold text-sm hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(38,116,231,0.3)] glow-button w-full"
               >
                 <span>Submit Inquiry</span>
                 <span class="material-symbols-outlined text-base">send</span>
@@ -1527,7 +1533,7 @@
 
           <!-- Right: Contact Cards -->
           <div class="lg:col-span-5 flex flex-col gap-6">
-            <div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-6">
+            <div class="p-6 sm:p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-6">
               <h3 class="font-headline-md text-xl font-bold text-on-surface">Direct Communication</h3>
               
               <div class="flex items-start gap-4">
