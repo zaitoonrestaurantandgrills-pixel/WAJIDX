@@ -236,13 +236,13 @@
     if (!alreadyRendered) {
       container.innerHTML = `
       <!-- Hero Section (From Stitch Design - Enhanced Mobile Responsiveness) -->
-      <section class="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
+      <section class="relative min-h-[85vh] sm:min-h-[90vh] flex flex-col items-center justify-center px-4 md:px-xl py-10 sm:py-16 md:py-24 overflow-hidden" id="home">
         <!-- Abstract background bloom -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
       <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
         <!-- Left Column: Primary Pitch, Headline & Action Buttons (Appears after Hero Image on mobile, left column on desktop) -->
-        <div class="flex flex-col gap-6 sm:gap-8 order-2 lg:order-1">
+        <div class="flex flex-col gap-6 sm:gap-8 order-2 lg:order-1 max-w-xl mx-auto lg:mx-0 w-full">
           <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-3.5 py-1.5 rounded-full self-start shadow-sm">
             <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
             <span class="font-label-caps text-[11px] sm:text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
@@ -315,7 +315,7 @@
       </div>
 
       <!-- Interactive Scroll Indicator with animated dot and scroll response -->
-      <div class="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-4 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
+      <div class="w-full flex flex-col items-center justify-center pt-8 sm:pt-14 pb-2 opacity-75 hover:opacity-100 transition-opacity" id="scroll-prompt">
         <a class="flex flex-col items-center gap-2 text-on-surface-variant hover:text-on-tertiary-container group transition-colors" href="/projects">
           <span class="font-label-caps text-[10px] tracking-widest uppercase">Scroll to explore</span>
           <div class="w-5 h-8 rounded-full border border-outline-variant/60 flex items-start justify-center p-1 group-hover:border-on-tertiary-container transition-colors">
