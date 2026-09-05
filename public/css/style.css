@@ -123,6 +123,39 @@
   backdrop-filter: blur(8px);
 }
 
+/* Hero Background Portrait Responsive Positioning */
+.hero-bg-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  filter: contrast(1.05) brightness(1.02);
+}
+
+@media (min-width: 640px) {
+  .hero-bg-portrait {
+    object-position: 70% 20%;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-bg-portrait {
+    object-position: 75% 20%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-bg-portrait {
+    object-position: 82% 20%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-bg-portrait {
+    object-position: 85% 20%;
+  }
+}
+
 /* Hero Portrait & Cyber Studio Styling */
 .hero-portrait-container {
   position: relative;
