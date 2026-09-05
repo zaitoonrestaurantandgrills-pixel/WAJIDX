@@ -225,7 +225,9 @@
       description: 'WAJIDX engineers practical business systems, POS platforms, computer vision AI, and custom software architecture.'
     });
 
-    container.innerHTML = `
+    const alreadyRendered = container.querySelector('#home');
+    if (!alreadyRendered) {
+      container.innerHTML = `
       <!-- Hero Section (From Stitch Design) -->
       <section class="relative min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-24 overflow-hidden" id="home">
         <!-- Abstract background bloom -->
@@ -275,7 +277,7 @@
             <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
             <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
               <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
-                <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg"/>
+                <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.2.0"/>
                 <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
                 <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
                   <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -398,6 +400,7 @@
         </div>
       </section>
     `;
+    }
 
     // Initialize Full-Page 3D Web & Dev Universe (From Stitch Design)
     if (window.initUniverse3D) {
@@ -1641,29 +1644,26 @@
   // INITIALIZATION
   // -------------------------------------------------------------
   async function init() {
-    // 1. Fetch Global Settings
-    const settingsRes = await apiGet('/api/settings');
-    if (settingsRes && settingsRes.settings) {
-      state.settings = settingsRes.settings;
-    }
-
-    // 2. Fetch Categories
-    const catRes = await apiGet('/api/categories');
-    if (catRes && catRes.categories) {
-      state.categories = catRes.categories;
-    }
-
-    // 3. Fetch Technologies
-    const techRes = await apiGet('/api/technologies');
-    if (techRes && techRes.technologies) {
-      state.technologies = techRes.technologies;
-    }
-
-    // Listen to back/forward browser history
+    // 1. Listen to back/forward browser history
     window.addEventListener('popstate', router);
 
-    // Initial Route Execution
+    // 2. Execute router immediately so initial screen renders with zero network lag
     router();
+
+    // 3. Fetch Global Settings, Categories, and Technologies in parallel in background
+    Promise.all([
+      apiGet('/api/settings').then(res => {
+        if (res && res.settings) state.settings = res.settings;
+      }),
+      apiGet('/api/categories').then(res => {
+        if (res && res.categories) state.categories = res.categories;
+      }),
+      apiGet('/api/technologies').then(res => {
+        if (res && res.technologies) state.technologies = res.technologies;
+      })
+    ]).catch(err => {
+      console.warn('[Sync background error]:', err);
+    });
   }
 
   // Export to window

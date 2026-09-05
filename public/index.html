@@ -7,9 +7,9 @@
   
   <meta name="description" content="WAJIDX is a technology and digital solutions brand focused on practical business systems, POS platforms, computer vision AI, and custom software architecture."/>
   <meta name="keywords" content="WAJIDX, software engineering, business systems, POS, restaurant ERP, computer vision, AI automation, web applications"/>
-  <link rel="canonical" href="http://localhost:3000/"/>
+  <link rel="canonical" href="https://wajid.website/"/>
   <link rel="icon" type="image/png" href="/assets/wajidx-logo.png"/>
-  <link rel="preload" as="image" href="/assets/wajid-hero.jpg" fetchpriority="high"/>
+  <link rel="preload" as="image" href="/assets/wajid-hero.jpg?v=2.2.0" fetchpriority="high"/>
   
   <!-- Open Graph -->
   <meta property="og:title" content="WAJIDX — Build. Automate. Innovate."/>
@@ -88,7 +88,7 @@
     };
   </script>
 
-  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/style.css?v=2.2.0"/>
 </head>
 <body class="bg-primary-container text-on-surface font-body-md text-body-md antialiased blueprint-grid min-h-screen relative overflow-x-hidden selection:bg-on-tertiary-container selection:text-white flex flex-col justify-between">
 
@@ -144,7 +144,177 @@
 
   <!-- Main View Container -->
   <main id="app-root" class="flex-grow pt-[72px]">
-    <!-- Views dynamically rendered by app.js or admin.js -->
+    <!-- Hero Section (From Stitch Design) -->
+    <section class="relative min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-24 overflow-hidden" id="home">
+      <!-- Abstract background bloom -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
+
+      <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+        <!-- Left Column -->
+        <div class="flex flex-col gap-8 order-2 lg:order-1 animate-fade-in-up">
+          <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/50 backdrop-blur-md px-4 py-2 rounded-full self-start">
+            <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
+          </div>
+
+          <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
+            We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container to-tertiary">Digital Solutions</span> That Move Businesses Forward.
+          </h1>
+
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
+            Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <a class="bg-on-tertiary-container text-white px-8 py-4 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all duration-300 hover:shadow-[0_0_20px_rgba(38,116,231,0.2)] text-center flex items-center justify-center gap-2 group" href="/projects">
+              Explore Projects
+              <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </a>
+            <a class="border border-outline-variant bg-transparent text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all duration-300 text-center" href="/contact">
+              Start a Conversation
+            </a>
+          </div>
+
+          <div class="flex items-center gap-6 mt-6 pt-6 border-t border-outline-variant/30">
+            <div class="flex flex-col gap-1">
+              <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
+              <span class="font-code-sm text-code-sm text-on-surface font-semibold">ERP &amp; POS Systems</span>
+            </div>
+            <div class="w-px h-8 bg-outline-variant/30"></div>
+            <div class="flex flex-col gap-1">
+              <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
+              <span class="font-code-sm text-code-sm text-on-surface font-semibold">Enterprise Automation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Founder Portrait Card (From Stitch) -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
+          <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
+          <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+            <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
+              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.2.0"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
+              <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
+              </div>
+              <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
+                    Wajid
+                    <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
+                  </div>
+                  <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5">Founder &amp; Lead Systems Architect</p>
+                </div>
+                <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
+                  WX
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section class="py-24 px-4 md:px-xl border-t border-outline-variant/20 relative z-10 bg-surface-container-lowest/40">
+      <div class="max-w-container-max mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+              <span class="font-label-caps text-label-caps text-on-tertiary-container tracking-widest uppercase">ENGINEERING PORTFOLIO</span>
+            </div>
+            <h2 class="font-display-lg text-3xl md:text-4xl text-on-surface font-bold">Featured Projects</h2>
+          </div>
+          <a href="/projects" class="text-on-surface-variant hover:text-on-tertiary-container font-semibold transition-colors flex items-center gap-2 group">
+            View All Projects
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+
+        <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="col-span-full py-12 text-center text-on-surface-variant">Loading featured projects...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services & Capabilities Overview -->
+    <section class="py-24 px-4 md:px-xl border-t border-outline-variant/20 relative z-10">
+      <div class="max-w-container-max mx-auto">
+        <div class="max-w-2xl mb-16">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+            <span class="font-label-caps text-label-caps text-on-tertiary-container tracking-widest uppercase">CAPABILITIES</span>
+          </div>
+          <h2 class="font-display-lg text-3xl md:text-4xl text-on-surface font-bold mb-4">Engineered for Reliability</h2>
+          <p class="font-body-lg text-on-surface-variant">We bridge complex operational challenges with precise software architecture. Every solution is custom-fitted to operational realities.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Card 1 -->
+          <div class="p-8 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30 glow-card flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container mb-6">
+                <span class="material-symbols-outlined text-2xl">point_of_sale</span>
+              </div>
+              <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">POS &amp; Business ERP Systems</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
+                High-speed transactional terminals, real-time Kitchen Display Systems, ingredient gram-level recipe costing, and strict shift audits.
+              </p>
+            </div>
+            <span class="font-code-sm text-xs text-on-tertiary-container">01 // TRANSACTION ENGINES</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="p-8 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30 glow-card flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container mb-6">
+                <span class="material-symbols-outlined text-2xl">smart_toy</span>
+              </div>
+              <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">AI &amp; Computer Vision</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
+                Edge biometric attendance, anti-spoofing neural embeddings, real-time object tracking, and automated workforce intelligence pipelines.
+              </p>
+            </div>
+            <span class="font-code-sm text-xs text-on-tertiary-container">02 // EDGE INFERENCE</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="p-8 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30 glow-card flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-DEFAULT bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container mb-6">
+                <span class="material-symbols-outlined text-2xl">precision_manufacturing</span>
+              </div>
+              <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">Workflow Automation</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
+                Eliminate repetitive human error through robust event-driven microservices, supplier price indexers, and automated ledger sync.
+              </p>
+            </div>
+            <span class="font-code-sm text-xs text-on-tertiary-container">03 // AUTOMATION PIPELINES</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conversion CTA Section -->
+    <section class="py-24 px-4 md:px-xl border-t border-outline-variant/20 relative z-10 bg-surface-container-lowest/60">
+      <div class="max-w-container-max mx-auto p-10 md:p-16 rounded-xl border border-on-tertiary-container/30 bg-gradient-to-b from-surface-container-low to-surface-container-lowest relative overflow-hidden text-center flex flex-col items-center">
+        <div class="absolute inset-0 bg-on-tertiary-container/5 pointer-events-none"></div>
+        <span class="font-label-caps text-label-caps text-on-tertiary-container tracking-widest uppercase mb-4">START A PROJECT</span>
+        <h2 class="font-display-lg text-3xl md:text-5xl font-bold text-on-surface max-w-2xl mb-6">
+          Ready to engineer your next operational advantage?
+        </h2>
+        <p class="font-body-lg text-on-surface-variant max-w-xl mb-8">
+          Tell us about your operational bottlenecks or technology vision. We design and deliver production-ready software.
+        </p>
+        <a href="/contact" class="bg-on-tertiary-container text-white px-10 py-4 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all duration-300 hover:shadow-[0_0_30px_rgba(38,116,231,0.4)] flex items-center gap-2">
+          Let's Talk
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </section>
   </main>
 
   <!-- Shared Global Footer -->
@@ -216,13 +386,18 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <script src="/js/shader.js"></script>
-  <script src="/js/universe3d.js"></script>
-  <script src="/js/app.js"></script>
-  <script src="/js/admin.js"></script>
+  <!-- Scripts with Cache-Busting Query Strings -->
+  <script src="/js/shader.js?v=2.2.0"></script>
+  <script src="/js/universe3d.js?v=2.2.0"></script>
+  <script src="/js/app.js?v=2.2.0"></script>
+  <script src="/js/admin.js?v=2.2.0"></script>
 
   <script>
+    // Initialize 3D Universe immediately when loaded
+    if (window.initUniverse3D) {
+      window.initUniverse3D('threejs-universe-container');
+    }
+
     // Header scroll background effect
     window.addEventListener('scroll', () => {
       const header = document.getElementById('site-header');
