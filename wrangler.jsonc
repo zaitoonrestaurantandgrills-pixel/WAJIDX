@@ -2,13 +2,30 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "wajidx",
   "account_id": "a63883e62ca38b324a6a803bc6f900d1",
+  "main": "worker.js",
   "compatibility_date": "2026-09-05",
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "vars": {
+    "NODE_ENV": "production",
+    "SITE_URL": "https://wajid.website",
+    "ADMIN_DEFAULT_USER": "admin",
+    "ADMIN_DEFAULT_EMAIL": "admin@wajidx.com",
+    "ADMIN_DEFAULT_PASSWORD": "Admin@Wajidx2026!",
+    "JWT_SECRET": "wajidx_super_secret_jwt_key_2026_precision_minimalism"
+  },
   "assets": {
     "directory": "./public",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*",
+      "/auth/*",
+      "/admin-api/*",
+      "/sitemap.xml",
+      "/robots.txt"
+    ]
   },
   "routes": [
     {
