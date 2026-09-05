@@ -4,15 +4,17 @@ const crypto = require('node:crypto');
 // In-Memory Rate Limiter Store
 const rateLimitStore = new Map();
 
-// Periodic cleanup of expired rate limit buckets (every 5 minutes)
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, data] of rateLimitStore.entries()) {
-    if (data.resetTime <= now) {
-      rateLimitStore.delete(key);
+// Lazy cleanup helper to prevent memory leak without relying on Node-specific setInterval.unref()
+function cleanExpiredBuckets() {
+  if (rateLimitStore.size > 500) {
+    const now = Date.now();
+    for (const [key, data] of rateLimitStore.entries()) {
+      if (data.resetTime <= now) {
+        rateLimitStore.delete(key);
+      }
     }
   }
-}, 5 * 60 * 1000).unref();
+}
 
 /**
  * Creates a rate limiter middleware for specific endpoints
@@ -23,11 +25,14 @@ setInterval(() => {
  */
 function createRateLimiter({ windowMs = 15 * 60 * 1000, max = 100, message = 'Too many requests, please try again later.' }) {
   return function rateLimiter(req, res, next) {
-    // Get client IP address
+    cleanExpiredBuckets();
+
+    // Get client IP address safely across Node and Cloudflare Workers
     const ip = req.headers['cf-connecting-ip'] || 
                req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
-               req.socket.remoteAddress || 
-               'unknown-ip';
+               req.socket?.remoteAddress || 
+               req.ip ||
+               'client-ip';
 
     const routeKey = `${req.baseUrl || ''}${req.path || ''}`;
     const key = `${ip}:${routeKey}`;

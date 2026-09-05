@@ -392,19 +392,24 @@ class InMemoryDatabase {
     // 16. INSERT CONTACT MESSAGES
     if (upper.includes('INTO WAJIDX_CONTACT_MESSAGES')) {
       const newId = this.autoIncrement.messages++;
-      const [name, email, phone, company, projectType, budget, message, ip, agent] = params;
+      let name, email, phone, company, projectType, budget, subject, message, ip, agent;
+      if (params.length === 5) {
+        [name, email, subject, message, ip] = params;
+      } else {
+        [name, email, phone, company, projectType, budget, message, ip, agent] = params;
+      }
       this.messages.unshift({
         id: newId,
-        name,
-        email,
-        phone,
-        company,
-        project_type: projectType,
-        budget_range: budget,
-        subject: `Project Inquiry from ${name}`,
-        message,
-        ip_address: ip,
-        user_agent: agent,
+        name: name || '',
+        email: email || '',
+        phone: phone || '',
+        company: company || '',
+        project_type: projectType || 'General',
+        budget_range: budget || '',
+        subject: subject || `Project Inquiry from ${name}`,
+        message: message || '',
+        ip_address: ip || '',
+        user_agent: agent || '',
         is_read: false,
         created_at: new Date()
       });
