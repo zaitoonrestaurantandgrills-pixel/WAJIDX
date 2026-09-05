@@ -241,8 +241,8 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
       <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
-        <!-- Left Column: Primary Pitch, Headline & Action Buttons (Rendered First for Immediate Impact) -->
-        <div class="flex flex-col gap-6 sm:gap-8 order-1 lg:order-1">
+        <!-- Left Column: Primary Pitch, Headline & Action Buttons (Appears after Hero Image on mobile, left column on desktop) -->
+        <div class="flex flex-col gap-6 sm:gap-8 order-2 lg:order-1">
           <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/70 backdrop-blur-md px-3.5 py-1.5 rounded-full self-start shadow-sm">
             <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
             <span class="font-label-caps text-[11px] sm:text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
@@ -286,12 +286,12 @@
           </div>
         </div>
 
-        <!-- Right Column: Founder Portrait Card (From Stitch) -->
-        <div class="order-2 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible w-full">
+        <!-- Right Column: Founder Portrait Hero Card (Appears FIRST and PROMINENTLY on mobile, right on desktop) -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible w-full">
           <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
-          <div class="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-2.5 sm:p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+          <div class="relative w-full max-w-[310px] sm:max-w-[360px] lg:max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-2.5 sm:p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50 mx-auto lg:mr-0">
             <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
-              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.4.0"/>
+              <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg?v=2.4.2"/>
               <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
               <div class="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/85 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
