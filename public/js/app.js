@@ -13,7 +13,8 @@
     searchQuery: '',
     selectedCategory: 'all',
     selectedSort: 'featured',
-    shaderInstance: null
+    shaderInstance: null,
+    universeCleanup: null
   };
 
   // Helper: Fetch JSON wrapper
@@ -225,118 +226,76 @@
     });
 
     container.innerHTML = `
-      <!-- Hero Section with Full Background Hero Image -->
-      <section class="relative min-h-[92vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-28 overflow-hidden" id="hero-section">
-        
-        <!-- Full Hero Section Background Image Layer -->
-        <div class="absolute inset-0 z-0 overflow-hidden bg-primary-container">
-          <img 
-            src="/assets/wajid-hero.jpg" 
-            alt="Wajid — Principal Systems Architect &amp; Founder" 
-            class="hero-bg-portrait w-full h-full object-cover object-[center_15%] sm:object-[70%_20%] md:object-[75%_20%] lg:object-[82%_20%] xl:object-[85%_20%] select-none pointer-events-none transition-all duration-700"
-            loading="eager"
-            fetchpriority="high"
-          />
-          
-          <!-- Ambient Cyan/Electric Blue Halo accentuating the portrait -->
-          <div class="absolute top-1/4 right-5 sm:right-1/6 md:right-1/5 w-[450px] md:w-[650px] h-[450px] md:h-[650px] bg-on-tertiary-container/20 rounded-full blur-[130px] pointer-events-none"></div>
+      <!-- Hero Section (From Stitch Design) -->
+      <section class="relative min-h-[90vh] flex items-center justify-center px-4 md:px-xl py-20 md:py-24 overflow-hidden" id="home">
+        <!-- Abstract background bloom -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-on-tertiary-container rounded-full blur-[150px] opacity-[0.04] pointer-events-none"></div>
 
-          <!-- Subtle WebGL Shader Accent Layer -->
-          <div class="absolute inset-0 opacity-20 mix-blend-screen pointer-events-none">
-            <canvas id="bg-shader-canvas" class="w-full h-full block"></canvas>
-          </div>
-
-          <!-- Dark Protective Gradient Overlays for Maximum Text Legibility & Contrast -->
-          <!-- Horizontal: Dense dark on the left for text contrast, fading out to reveal portrait on right -->
-          <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/95 via-35% sm:via-[#050505]/85 md:via-[#050505]/75 lg:via-[#050505]/60 lg:via-55% to-[#050505]/20 lg:to-transparent pointer-events-none"></div>
-
-          <!-- Vertical Overlay on Mobile/Tablet: Guarantees text contrast when stacked vertically -->
-          <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/85 via-60% to-transparent lg:hidden pointer-events-none"></div>
-
-          <!-- Edge Fades: Top (header) and Bottom (featured projects) -->
-          <div class="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#050505] to-transparent pointer-events-none"></div>
-          <div class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none"></div>
-        </div>
-
-        <!-- Hero Content Layer -->
-        <div class="max-w-container-max mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          <!-- Left Column: Copy, CTAs, Stats -->
-          <div class="lg:col-span-8 xl:col-span-7 flex flex-col gap-6 animate-fade-in-up">
-            
-            <!-- Studio Eyebrow Pill -->
-            <div class="inline-flex items-center gap-2.5 border border-on-tertiary-container/30 bg-surface/90 backdrop-blur-md px-4 py-1.5 rounded-full self-start shadow-[0_0_25px_rgba(38,116,231,0.2)]">
-              <span class="beacon-dot"></span>
-              <span class="font-label-caps text-xs text-on-tertiary-container tracking-wider font-semibold">WAJIDX TECHNOLOGY STUDIO</span>
-              <span class="text-outline-variant/60 text-xs hidden sm:inline">&bull;</span>
-              <span class="font-label-caps text-[11px] text-on-surface-variant hidden sm:inline">LED BY WAJID</span>
+        <div class="max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+          <!-- Left Column -->
+          <div class="flex flex-col gap-8 order-2 lg:order-1 animate-fade-in-up">
+            <div class="inline-flex items-center gap-2 border border-outline-variant/30 bg-surface-dim/50 backdrop-blur-md px-4 py-2 rounded-full self-start">
+              <span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+              <span class="font-label-caps text-label-caps text-on-surface-variant">WAJIDX TECHNOLOGY STUDIO</span>
             </div>
 
-            <!-- Main Heading -->
-            <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-[54px] xl:text-[60px] text-on-surface leading-[1.1] tracking-tight font-extrabold drop-shadow-md">
-              Engineering High-Performance <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-on-tertiary-container to-indigo-200">Business Systems</span> &amp; Vision AI.
+            <h1 class="font-display-lg text-4xl sm:text-5xl lg:text-display-lg text-on-surface leading-tight tracking-tighter font-bold">
+              We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container to-tertiary">Digital Solutions</span> That Move Businesses Forward.
             </h1>
 
-            <!-- Narrative Paragraph -->
-            <p class="font-body-lg text-base md:text-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-5 py-1 bg-gradient-to-r from-on-tertiary-container/15 via-surface/40 to-transparent backdrop-blur-[2px] leading-relaxed">
-              We bridge complex operational challenges with bespoke software architecture. From millisecond-accurate restaurant POS and recipe engines to biometric computer vision and enterprise automation.
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
+              Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
             </p>
 
-            <!-- CTA Button Row -->
-            <div class="flex flex-col sm:flex-row gap-4 pt-2">
-              <a href="/projects" class="bg-on-tertiary-container text-white px-8 py-4 rounded-lg font-semibold hover:bg-opacity-95 transition-all duration-300 hover:shadow-[0_0_30px_rgba(38,116,231,0.4)] text-center flex items-center justify-center gap-2 group text-sm glow-button">
-                <span>Explore Systems &amp; Case Studies</span>
-                <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+              <a class="bg-on-tertiary-container text-white px-8 py-4 rounded-DEFAULT font-semibold hover:bg-opacity-90 transition-all duration-300 hover:shadow-[0_0_20px_rgba(38,116,231,0.2)] text-center flex items-center justify-center gap-2 group" href="/projects">
+                Explore Projects
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
               </a>
-              <a href="/contact" class="border border-outline-variant/60 bg-surface-container-low/80 backdrop-blur-md text-on-surface hover:text-white px-7 py-4 rounded-lg font-semibold hover:border-on-tertiary-container hover:bg-on-tertiary-container/15 transition-all duration-300 text-center text-sm flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-lg text-on-tertiary-container">forum</span>
-                <span>Consult with Wajid</span>
+              <a class="border border-outline-variant bg-transparent text-on-surface px-8 py-4 rounded-DEFAULT font-semibold hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all duration-300 text-center" href="/contact">
+                Start a Conversation
               </a>
             </div>
 
-            <!-- Stats Bar -->
-            <div class="grid grid-cols-3 gap-3 pt-6 mt-2 border-t border-outline-variant/30 max-w-xl bg-surface-container-lowest/40 backdrop-blur-md p-4 rounded-xl border border-white/5">
-              <div class="flex flex-col">
-                <span class="font-display-lg text-2xl md:text-3xl font-bold text-white tracking-tight">Sub-50ms</span>
-                <span class="font-label-caps text-[11px] text-on-surface-variant mt-0.5">Core Dispatch Latency</span>
+            <div class="flex items-center gap-6 mt-6 pt-6 border-t border-outline-variant/30">
+              <div class="flex flex-col gap-1">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">EXPERTISE</span>
+                <span class="font-code-sm text-code-sm text-on-surface font-semibold">ERP &amp; POS Systems</span>
               </div>
-              <div class="flex flex-col border-l border-outline-variant/30 pl-4">
-                <span class="font-display-lg text-2xl md:text-3xl font-bold text-white tracking-tight">100%</span>
-                <span class="font-label-caps text-[11px] text-on-surface-variant mt-0.5">Architecture Integrity</span>
-              </div>
-              <div class="flex flex-col border-l border-outline-variant/30 pl-4">
-                <span class="font-display-lg text-2xl md:text-3xl font-bold text-white tracking-tight">Cloud + Edge</span>
-                <span class="font-label-caps text-[11px] text-on-surface-variant mt-0.5">Hybrid Reliability</span>
+              <div class="w-px h-8 bg-outline-variant/30"></div>
+              <div class="flex flex-col gap-1">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">FOCUS</span>
+                <span class="font-code-sm text-code-sm text-on-surface font-semibold">Enterprise Automation</span>
               </div>
             </div>
           </div>
 
-          <!-- Right Area: Floating Status & Identity Badges (positioned over the backdrop) -->
-          <div class="lg:col-span-4 xl:col-span-5 hidden lg:flex flex-col items-end justify-between min-h-[460px] py-4 pointer-events-none">
-            
-            <!-- Top Floating Status Badge -->
-            <div class="glass-badge px-4 py-2 rounded-full flex items-center gap-2.5 animate-float-slow pointer-events-auto shadow-2xl">
-              <span class="beacon-dot"></span>
-              <span class="font-code-sm text-xs font-semibold text-white tracking-wide">Available for Architecture</span>
-            </div>
-
-            <!-- Bottom Floating Credential Card -->
-            <div class="glass-badge p-4 rounded-xl flex items-center gap-3.5 animate-float-reverse pointer-events-auto max-w-[310px] border border-white/15 shadow-2xl backdrop-blur-xl">
-              <div class="w-11 h-11 rounded-lg bg-on-tertiary-container/20 border border-on-tertiary-container/40 flex items-center justify-center text-on-tertiary-container flex-shrink-0 shadow-inner">
-                <span class="material-symbols-outlined text-2xl">deployed_code</span>
-              </div>
-              <div class="flex flex-col">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-display-lg font-bold text-sm text-white">Wajid</span>
-                  <span class="material-symbols-outlined text-blue-400 text-sm" title="Verified Principal Architect">verified</span>
+          <!-- Right Column: Founder Portrait Card (From Stitch) -->
+          <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative group overflow-visible">
+            <div class="absolute inset-0 bg-on-tertiary-container/10 blur-[80px] rounded-2xl group-hover:bg-on-tertiary-container/20 transition-all duration-700 pointer-events-none"></div>
+            <div class="relative w-full max-w-[440px] rounded-xl border border-outline-variant/30 bg-surface-dim/80 backdrop-blur-md overflow-visible p-3 shadow-2xl transition-all duration-500 hover:border-on-tertiary-container/50">
+              <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-lowest z-10">
+                <img alt="Wajid - Founder &amp; Lead Systems Architect" class="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.02]" src="/assets/wajid-hero.jpg"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent pointer-events-none"></div>
+                <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 text-code-sm text-on-surface-variant">
+                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span class="text-[11px] font-medium tracking-wide">Available for Advisory</span>
                 </div>
-                <span class="font-label-caps text-[10px] text-on-tertiary-container font-semibold uppercase tracking-wider">Principal Architect &amp; Founder</span>
-                <span class="text-[11px] text-on-surface-variant font-body-md mt-0.5">POS &bull; Vision AI &bull; Cloud Systems</span>
+                <div class="absolute bottom-3 left-3 right-3 p-3.5 rounded-lg bg-surface-dim/90 backdrop-blur-md border border-outline-variant/30 flex items-center justify-between gap-3">
+                  <div>
+                    <div class="text-on-surface font-headline-md font-semibold text-[17px] leading-tight flex items-center gap-2">
+                      Wajid
+                      <span class="material-symbols-outlined text-on-tertiary-container text-[16px]">verified</span>
+                    </div>
+                    <p class="font-code-sm text-code-sm text-on-surface-variant text-[12px] mt-0.5">Founder &amp; Lead Systems Architect</p>
+                  </div>
+                  <div class="w-8 h-8 rounded bg-on-tertiary-container/10 border border-on-tertiary-container/20 flex items-center justify-center text-on-tertiary-container font-code-sm font-bold text-xs">
+                    WX
+                  </div>
+                </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </section>
 
@@ -440,10 +399,10 @@
       </section>
     `;
 
-    // Initialize WebGL Shader on Hero
-    if (window.initShaderCanvas) {
-      if (state.shaderInstance) state.shaderInstance.destroy();
-      state.shaderInstance = window.initShaderCanvas('bg-shader-canvas');
+    // Initialize Full-Page 3D Web & Dev Universe (From Stitch Design)
+    if (window.initUniverse3D) {
+      if (state.universeCleanup) state.universeCleanup();
+      state.universeCleanup = window.initUniverse3D('threejs-universe-container');
     }
 
     // Load Featured Projects

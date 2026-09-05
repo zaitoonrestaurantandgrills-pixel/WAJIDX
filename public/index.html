@@ -22,6 +22,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   
+  <!-- Three.js for 3D visualizations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   
@@ -88,6 +91,9 @@
   <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body class="bg-primary-container text-on-surface font-body-md text-body-md antialiased blueprint-grid min-h-screen relative overflow-x-hidden selection:bg-on-tertiary-container selection:text-white flex flex-col justify-between">
+
+  <!-- Full-Screen Interactive 3D Web & Dev Universe Background (From Stitch Design) -->
+  <div id="threejs-universe-container" class="fixed inset-0 w-full h-full pointer-events-none z-0 bg-transparent"></div>
 
   <!-- Shared Top Navigation Bar -->
   <header id="site-header" class="bg-surface/80 backdrop-blur-xl text-on-surface fixed top-0 w-full z-50 border-b border-outline-variant/30 transition-all duration-300">
@@ -212,6 +218,7 @@
 
   <!-- Scripts -->
   <script src="/js/shader.js"></script>
+  <script src="/js/universe3d.js"></script>
   <script src="/js/app.js"></script>
   <script src="/js/admin.js"></script>
 
