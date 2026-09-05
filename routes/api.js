@@ -316,4 +316,43 @@ router.post('/contact', async (req, res) => {
   }
 });
 
+// GET /api/version - Public application version and system telemetry
+router.get('/version', async (req, res) => {
+  try {
+    let latestMigration = null;
+    try {
+      const [migrations] = await query('SELECT version, name, applied_at FROM wajidx_schema_migrations ORDER BY applied_at DESC LIMIT 1');
+      if (migrations && migrations.length > 0) {
+        latestMigration = migrations[0];
+      }
+    } catch (e) {
+      // Ignored if table not yet migrated
+    }
+
+    res.json({
+      success: true,
+      app: 'WAJIDX Platform',
+      version: '1.1.0',
+      release: 'v1.1.0-stable',
+      database: {
+        name: 'devaj',
+        schemaVersion: latestMigration ? latestMigration.version : '20260830000002_002_add_versioning_tables'
+      },
+      revertCapability: true,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.json({
+      success: true,
+      app: 'WAJIDX Platform',
+      version: '1.1.0',
+      release: 'v1.1.0-stable',
+      database: { name: 'devaj' },
+      revertCapability: true,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
+

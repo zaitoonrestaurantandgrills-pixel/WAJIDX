@@ -259,6 +259,10 @@
                 <span class="material-symbols-outlined text-xl">settings</span>
                 Site &amp; SEO Settings
               </button>
+              <button data-tab="backups" class="admin-nav-btn flex items-center gap-3 px-3 py-2.5 rounded hover:bg-surface-container-highest transition-colors text-left text-on-surface-variant">
+                <span class="material-symbols-outlined text-xl text-amber-400">settings_backup_restore</span>
+                Backups &amp; Revert
+              </button>
             </nav>
           </div>
 
@@ -373,6 +377,9 @@
     } else if (tab === 'settings') {
       if (titleEl) titleEl.textContent = 'Site & SEO Settings';
       renderSettingsTab(container);
+    } else if (tab === 'backups') {
+      if (titleEl) titleEl.textContent = 'System Backups, Versioning & Rollback';
+      renderBackupsTab(container);
     }
   }
 
@@ -585,6 +592,9 @@
                       <a href="/projects/${escape(p.slug)}" target="_blank" class="p-1.5 rounded hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface" title="View Public Page">
                         <span class="material-symbols-outlined text-lg">visibility</span>
                       </a>
+                      <button class="history-project-btn p-1.5 rounded hover:bg-amber-950/30 text-amber-400" data-id="${p.id}" data-title="${escape(p.title)}" title="Version History & Revert">
+                        <span class="material-symbols-outlined text-lg">history</span>
+                      </button>
                       <button class="edit-project-btn p-1.5 rounded hover:bg-on-tertiary-container/10 text-on-tertiary-container" data-id="${p.id}" title="Edit Project">
                         <span class="material-symbols-outlined text-lg">edit</span>
                       </button>
@@ -604,6 +614,15 @@
     // Bind Add Project
     const addBtn = document.getElementById('add-project-btn');
     if (addBtn) addBtn.onclick = () => openProjectModal();
+
+    // Bind History Buttons
+    document.querySelectorAll('.history-project-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        const title = btn.getAttribute('data-title');
+        openProjectVersionsModal(id, title);
+      };
+    });
 
     // Bind Edit Buttons
     document.querySelectorAll('.edit-project-btn').forEach(btn => {
@@ -745,9 +764,17 @@
           <h2 class="font-headline-md text-xl font-bold text-on-surface">
             ${projectId ? 'Edit Project' : 'Create New Project'}
           </h2>
-          <button id="close-modal-btn" class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant">
-            <span class="material-symbols-outlined text-2xl">close</span>
-          </button>
+          <div class="flex items-center gap-2">
+            ${projectId ? `
+              <button type="button" id="modal-project-history-btn" class="px-3 py-1.5 text-xs font-semibold rounded bg-amber-950/40 border border-amber-500/30 text-amber-300 hover:bg-amber-900/40 flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-sm">history</span>
+                <span>Version History &amp; Revert</span>
+              </button>
+            ` : ''}
+            <button id="close-modal-btn" class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant">
+              <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+          </div>
         </div>
 
         <div id="project-form-alert" class="hidden p-3.5 rounded text-xs"></div>
@@ -922,8 +949,14 @@
 
     const closeBtn = document.getElementById('close-modal-btn');
     const cancelBtn = document.getElementById('cancel-project-btn');
+    const histBtn = document.getElementById('modal-project-history-btn');
     if (closeBtn) closeBtn.onclick = closeModal;
     if (cancelBtn) cancelBtn.onclick = closeModal;
+    if (histBtn) {
+      histBtn.onclick = () => {
+        openProjectVersionsModal(projectId, project.title);
+      };
+    }
 
     // Handle Form Submit
     const form = document.getElementById('project-editor-form');
@@ -1401,6 +1434,17 @@
 
     container.innerHTML = `
       <div class="max-w-4xl flex flex-col gap-8 animate-fade-in-up">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-low p-4 rounded-xl border border-outline-variant/30">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+            <span class="text-xs font-code-sm text-on-surface-variant">Live Configuration // Auto-Backup Active</span>
+          </div>
+          <button id="settings-history-btn" class="px-3.5 py-1.5 rounded bg-amber-950/40 border border-amber-500/30 text-amber-300 hover:bg-amber-900/40 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-sm">history</span>
+            <span>Settings Version History &amp; Revert</span>
+          </button>
+        </div>
+
         <div id="settings-alert" class="hidden p-4 rounded text-xs"></div>
 
         <form id="settings-form" class="flex flex-col gap-8">
@@ -1502,6 +1546,11 @@
     const form = document.getElementById('settings-form');
     const alertBox = document.getElementById('settings-alert');
     const saveBtn = document.getElementById('save-settings-btn');
+    const histBtn = document.getElementById('settings-history-btn');
+
+    if (histBtn) {
+      histBtn.onclick = () => openSettingsVersionsModal();
+    }
 
     if (form) {
       form.onsubmit = async (e) => {
@@ -1522,10 +1571,10 @@
 
         if (res && res.success) {
           alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
-          alertBox.textContent = 'Site settings updated successfully.';
+          alertBox.textContent = 'Site settings updated successfully. Automatic rollback revision captured.';
           alertBox.classList.remove('hidden');
         } else {
-          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/40 border border-red-500/40 text-red-300';
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
           alertBox.textContent = res?.error || 'Failed to update settings.';
           alertBox.classList.remove('hidden');
         }
@@ -1534,6 +1583,677 @@
         saveBtn.innerHTML = `<span>Save All Settings</span><span class="material-symbols-outlined text-base">check</span>`;
       };
     }
+  }
+
+  // -------------------------------------------------------------
+  // TAB: SYSTEM BACKUPS, VERSIONING & ROLLBACK
+  // -------------------------------------------------------------
+  async function renderBackupsTab(container) {
+    container.innerHTML = `<div class="py-12 text-center text-on-surface-variant">Gathering system backup &amp; versioning telemetry...</div>`;
+
+    const [snapRes, migRes, verRes] = await Promise.all([
+      adminFetch('/api/admin/system/snapshots'),
+      adminFetch('/api/admin/system/migrations'),
+      fetch('/api/version').then(r => r.json()).catch(() => null)
+    ]);
+
+    const snapshots = snapRes?.snapshots || [];
+    const migrations = migRes?.migrations || [];
+    const verData = verRes || { version: '1.1.0', release: 'v1.1.0-stable', database: { name: 'devaj' } };
+
+    container.innerHTML = `
+      <div class="flex flex-col gap-8 max-w-6xl animate-fade-in-up">
+        <!-- Telemetry Header -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-on-tertiary-container">
+              <span class="material-symbols-outlined text-xl">deployed_code</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-label-caps text-on-surface-variant">APPLICATION RELEASE</span>
+              <span class="text-sm font-bold text-on-surface">${escape(verData.release || 'v1.1.0-stable')}</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400">
+              <span class="material-symbols-outlined text-xl">database</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-label-caps text-on-surface-variant">DATABASE ENGINE</span>
+              <span class="text-sm font-bold text-on-surface">${escape(verData.database?.name || 'devaj')} // ONLINE</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <span class="material-symbols-outlined text-xl">history</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-label-caps text-on-surface-variant">ROLLBACK ENGINE</span>
+              <span class="text-sm font-bold text-amber-300">Active (1-Click Revert)</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="backup-global-alert" class="hidden p-4 rounded text-xs"></div>
+
+        <!-- Action Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Card 1: Create Instant Snapshot -->
+          <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between gap-4">
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-400 text-lg">save</span>
+                <h3 class="font-headline-md text-base font-bold text-on-surface">Create Database Snapshot</h3>
+              </div>
+              <p class="text-xs text-on-surface-variant leading-relaxed">
+                Take an immediate, point-in-time snapshot of all projects, features, categories, technologies, and site settings in the <strong>devaj</strong> database.
+              </p>
+            </div>
+
+            <form id="create-snapshot-form" class="flex flex-col gap-3">
+              <input
+                type="text"
+                id="snapshot-name-input"
+                placeholder="Snapshot label e.g. Pre-deploy v1.2..."
+                class="bg-surface-container-lowest border border-outline-variant/40 rounded px-3.5 py-2 text-xs text-on-surface focus:border-on-tertiary-container focus:outline-none"
+              />
+              <button
+                type="submit"
+                id="create-snap-btn"
+                class="bg-on-tertiary-container text-white py-2.5 px-4 rounded text-xs font-semibold hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 glow-button"
+              >
+                <span class="material-symbols-outlined text-sm">backup</span>
+                <span>Create Full Snapshot</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Card 2: Import / Upload JSON Backup -->
+          <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between gap-4">
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-on-tertiary-container text-lg">cloud_upload</span>
+                <h3 class="font-headline-md text-base font-bold text-on-surface">Import &amp; Restore JSON Backup</h3>
+              </div>
+              <p class="text-xs text-on-surface-variant leading-relaxed">
+                Upload an exported <code>.json</code> backup archive to restore or add to your snapshots catalog.
+              </p>
+            </div>
+
+            <form id="upload-backup-form" class="flex flex-col gap-3">
+              <div class="flex items-center gap-2">
+                <input
+                  type="file"
+                  id="backup-file-input"
+                  accept=".json"
+                  required
+                  class="block w-full text-xs text-on-surface-variant file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-surface-container-highest file:text-on-surface hover:file:bg-surface-bright cursor-pointer"
+                />
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <label class="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer">
+                  <input type="checkbox" id="restore-immediately-check" class="rounded bg-surface-container-lowest border-outline-variant"/>
+                  <span>Restore database immediately</span>
+                </label>
+                <button
+                  type="submit"
+                  id="upload-backup-btn"
+                  class="bg-surface-container-highest hover:bg-surface-bright text-on-surface py-2 px-4 rounded text-xs font-semibold transition-colors flex items-center gap-1.5"
+                >
+                  <span class="material-symbols-outlined text-sm">upload</span>
+                  <span>Upload</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Snapshots Catalog Table -->
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-400 text-lg">history_edu</span>
+              <h3 class="font-headline-md text-base font-bold text-on-surface">System Snapshots Catalog (${snapshots.length})</h3>
+            </div>
+            <span class="text-xs text-on-surface-variant font-code-sm">Target: devaj Database</span>
+          </div>
+
+          <div class="rounded-xl border border-outline-variant/30 bg-surface-container-low overflow-hidden admin-table-container">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-outline-variant/30 bg-surface-container-highest/60 text-on-surface-variant font-label-caps text-xs">
+                  <th class="py-3 px-4">Snapshot Label</th>
+                  <th class="py-3 px-4">Type</th>
+                  <th class="py-3 px-4">Item Counts</th>
+                  <th class="py-3 px-4">Created At</th>
+                  <th class="py-3 px-4">Author</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline-variant/20">
+                ${snapshots.length === 0 ? `
+                  <tr>
+                    <td colspan="6" class="py-8 text-center text-on-surface-variant text-xs">
+                      No snapshots created yet. Use the "Create Full Snapshot" button above.
+                    </td>
+                  </tr>
+                ` : snapshots.map(s => {
+                  const counts = s.item_counts || {};
+                  return `
+                    <tr class="hover:bg-surface-container-highest/40 transition-colors">
+                      <td class="py-3.5 px-4 font-bold text-on-surface">
+                        ${escape(s.snapshot_name)}
+                      </td>
+                      <td class="py-3.5 px-4">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-label-caps ${s.snapshot_type === 'auto_pre_update' ? 'bg-amber-950/40 text-amber-400 border border-amber-500/30' : 'bg-blue-950/40 text-blue-300 border border-blue-500/30'}">
+                          ${escape(s.snapshot_type || 'manual')}
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-4 text-xs font-code-sm text-on-surface-variant">
+                        ${counts.projects || 0} Proj • ${counts.technologies || 0} Tech • ${counts.categories || 0} Cat
+                      </td>
+                      <td class="py-3.5 px-4 text-xs text-on-surface-variant font-code-sm">
+                        ${new Date(s.created_at).toLocaleString()}
+                      </td>
+                      <td class="py-3.5 px-4 text-xs text-on-surface-variant">
+                        ${escape(s.created_by || 'admin')}
+                      </td>
+                      <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                          <a
+                            href="/api/admin/system/snapshots/${s.id}/download"
+                            class="download-snap-btn px-2.5 py-1 rounded bg-surface-container-highest hover:bg-surface-bright text-xs font-semibold text-on-surface transition-colors flex items-center gap-1"
+                            title="Download JSON Backup"
+                          >
+                            <span class="material-symbols-outlined text-sm">download</span>
+                            JSON
+                          </a>
+                          <button
+                            class="restore-snap-btn px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-all flex items-center gap-1 glow-button"
+                            data-id="${s.id}"
+                            data-name="${escape(s.snapshot_name)}"
+                            title="Revert database to this snapshot"
+                          >
+                            <span class="material-symbols-outlined text-sm">settings_backup_restore</span>
+                            Restore
+                          </button>
+                          <button
+                            class="delete-snap-btn p-1 rounded hover:bg-red-950/30 text-red-400 transition-colors"
+                            data-id="${s.id}"
+                            data-name="${escape(s.snapshot_name)}"
+                            title="Delete snapshot"
+                          >
+                            <span class="material-symbols-outlined text-base">delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Database Schema Migrations & Rollback Section -->
+        <div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-outline-variant/20 pb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-on-tertiary-container text-xl">schema</span>
+              <h3 class="font-headline-md text-base font-bold text-on-surface">Database Schema Migrations (devaj)</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="run-migration-up-btn" class="px-3 py-1.5 rounded bg-green-950/40 border border-green-500/40 text-green-300 hover:bg-green-900/40 text-xs font-semibold flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                <span>Apply Pending (UP)</span>
+              </button>
+              <button id="run-migration-down-btn" class="px-3 py-1.5 rounded bg-red-950/40 border border-red-500/40 text-red-300 hover:bg-red-900/40 text-xs font-semibold flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-sm">history</span>
+                <span>Rollback Last (DOWN)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            ${migrations.length === 0 ? `
+              <div class="text-xs text-on-surface-variant">No migration records found.</div>
+            ` : migrations.map(m => `
+              <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex justify-between items-center text-xs">
+                <div class="flex items-center gap-3">
+                  <span class="px-2 py-0.5 rounded font-label-caps text-[11px] font-bold ${m.applied ? 'bg-green-950/40 text-green-400 border border-green-500/30' : 'bg-amber-950/40 text-amber-400 border border-amber-500/30'}">
+                    ${m.applied ? '✔ APPLIED' : '⏳ PENDING'}
+                  </span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-on-surface">${escape(m.name)}</span>
+                    <span class="font-code-sm text-[11px] text-on-surface-variant">${escape(m.version)}</span>
+                  </div>
+                </div>
+                <span class="font-code-sm text-on-surface-variant text-[11px]">
+                  ${m.applied_at ? new Date(m.applied_at).toLocaleString() : 'Not applied'}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const alertBox = document.getElementById('backup-global-alert');
+
+    // Bind Create Snapshot
+    const snapForm = document.getElementById('create-snapshot-form');
+    if (snapForm) {
+      snapForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('snapshot-name-input');
+        const btn = document.getElementById('create-snap-btn');
+        btn.disabled = true;
+        btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Creating Snapshot...</span>`;
+
+        const res = await adminFetch('/api/admin/system/snapshots', {
+          method: 'POST',
+          body: JSON.stringify({ name: input.value })
+        });
+
+        if (res && res.success) {
+          alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+          alertBox.textContent = `Snapshot "${res.snapshot?.name || 'Manual'}" created successfully.`;
+          alertBox.classList.remove('hidden');
+          renderBackupsTab(container);
+        } else {
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+          alertBox.textContent = res?.error || 'Failed to create snapshot.';
+          alertBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">backup</span><span>Create Full Snapshot</span>`;
+        }
+      };
+    }
+
+    // Bind Upload Backup
+    const upForm = document.getElementById('upload-backup-form');
+    if (upForm) {
+      upForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('backup-file-input');
+        const restoreImmediately = document.getElementById('restore-immediately-check').checked;
+        const btn = document.getElementById('upload-backup-btn');
+
+        if (!fileInput.files || fileInput.files.length === 0) return;
+
+        btn.disabled = true;
+        btn.innerHTML = `<span>Uploading...</span>`;
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        if (restoreImmediately) formData.append('restoreImmediately', 'true');
+
+        const res = await adminFetch('/api/admin/system/snapshots/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (res && res.success) {
+          alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+          alertBox.textContent = res.message;
+          alertBox.classList.remove('hidden');
+          renderBackupsTab(container);
+        } else {
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+          alertBox.textContent = res?.error || 'Upload failed.';
+          alertBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">upload</span><span>Upload</span>`;
+        }
+      };
+    }
+
+    // Bind Restore Snapshot
+    document.querySelectorAll('.restore-snap-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+
+        if (!confirm(`CRITICAL: Are you sure you want to restore database to snapshot "${name}"?\nAn automatic backup of your current database will be saved first.`)) {
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Restoring...</span>`;
+
+        const res = await adminFetch(`/api/admin/system/snapshots/${id}/restore`, { method: 'POST' });
+
+        if (res && res.success) {
+          alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+          alertBox.textContent = res.message;
+          alertBox.classList.remove('hidden');
+          setTimeout(() => renderBackupsTab(container), 1000);
+        } else {
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+          alertBox.textContent = res?.error || 'Restore failed.';
+          alertBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">settings_backup_restore</span>Restore`;
+        }
+      };
+    });
+
+    // Bind Delete Snapshot
+    document.querySelectorAll('.delete-snap-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        if (!confirm(`Delete snapshot "${name}"?`)) return;
+
+        const res = await adminFetch(`/api/admin/system/snapshots/${id}`, { method: 'DELETE' });
+        if (res && res.success) {
+          renderBackupsTab(container);
+        }
+      };
+    });
+
+    // Bind Migrations UP
+    const migUpBtn = document.getElementById('run-migration-up-btn');
+    if (migUpBtn) {
+      migUpBtn.onclick = async () => {
+        migUpBtn.disabled = true;
+        migUpBtn.innerHTML = `<span>Applying...</span>`;
+        const res = await adminFetch('/api/admin/system/migrations/up', { method: 'POST' });
+        if (res && res.success) {
+          alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+          alertBox.textContent = res.message;
+          alertBox.classList.remove('hidden');
+          renderBackupsTab(container);
+        } else {
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+          alertBox.textContent = res?.error || 'Migration failed.';
+          alertBox.classList.remove('hidden');
+          migUpBtn.disabled = false;
+          migUpBtn.innerHTML = `<span class="material-symbols-outlined text-sm">arrow_upward</span><span>Apply Pending (UP)</span>`;
+        }
+      };
+    }
+
+    // Bind Migrations DOWN
+    const migDownBtn = document.getElementById('run-migration-down-btn');
+    if (migDownBtn) {
+      migDownBtn.onclick = async () => {
+        if (!confirm('Are you sure you want to rollback the last schema migration?')) return;
+        migDownBtn.disabled = true;
+        migDownBtn.innerHTML = `<span>Rolling back...</span>`;
+        const res = await adminFetch('/api/admin/system/migrations/rollback', {
+          method: 'POST',
+          body: JSON.stringify({ steps: 1 })
+        });
+        if (res && res.success) {
+          alertBox.className = 'p-3.5 rounded text-xs bg-amber-950/40 border border-amber-500/40 text-amber-300';
+          alertBox.textContent = res.message;
+          alertBox.classList.remove('hidden');
+          renderBackupsTab(container);
+        } else {
+          alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+          alertBox.textContent = res?.error || 'Rollback failed.';
+          alertBox.classList.remove('hidden');
+          migDownBtn.disabled = false;
+          migDownBtn.innerHTML = `<span class="material-symbols-outlined text-sm">history</span><span>Rollback Last (DOWN)</span>`;
+        }
+      };
+    }
+  }
+
+  // -------------------------------------------------------------
+  // MODAL: PROJECT REVISION TIMELINE & 1-CLICK REVERT
+  // -------------------------------------------------------------
+  async function openProjectVersionsModal(projectId, projectTitle) {
+    const modal = document.getElementById('admin-modal');
+    const modalBody = document.getElementById('admin-modal-body');
+    if (!modal || !modalBody) return;
+
+    modalBody.innerHTML = `
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <span class="material-symbols-outlined text-xl">history</span>
+            </div>
+            <div>
+              <h2 class="font-headline-md text-lg font-bold text-on-surface">Revision History &amp; Revert</h2>
+              <p class="text-xs text-on-surface-variant font-medium">${escape(projectTitle || 'Project #' + projectId)}</p>
+            </div>
+          </div>
+          <button id="close-versions-modal-btn" class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant">
+            <span class="material-symbols-outlined text-2xl">close</span>
+          </button>
+        </div>
+
+        <div id="versions-alert" class="hidden p-3.5 rounded text-xs"></div>
+
+        <div id="versions-list-container" class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
+          <div class="py-8 text-center text-on-surface-variant text-sm">Loading version timeline...</div>
+        </div>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    const closeBtn = document.getElementById('close-versions-modal-btn');
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    const res = await adminFetch(`/api/admin/projects/${projectId}/versions`);
+    const listContainer = document.getElementById('versions-list-container');
+    if (!listContainer) return;
+
+    if (!res || !res.versions || res.versions.length === 0) {
+      listContainer.innerHTML = `
+        <div class="p-8 text-center bg-surface-container-highest/30 rounded-xl border border-outline-variant/20 flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">info</span>
+          <span class="text-sm font-semibold text-on-surface">No Previous Revisions Found</span>
+          <span class="text-xs text-on-surface-variant max-w-sm">Revisions are automatically captured whenever you save changes to this project.</span>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = res.versions.map((v) => `
+      <div class="p-4 rounded-xl bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-outline-variant transition-colors">
+        <div class="flex items-start gap-3">
+          <div class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant/40 font-code-sm text-xs font-bold text-on-tertiary-container">
+            v${v.version_number}
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm font-semibold text-on-surface">${escape(v.change_summary || 'Revision snapshot')}</span>
+            <div class="flex items-center gap-3 text-xs text-on-surface-variant font-code-sm">
+              <span>${new Date(v.created_at).toLocaleString()}</span>
+              <span>•</span>
+              <span>by ${escape(v.created_by || 'admin')}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button class="preview-rev-btn px-3 py-1.5 rounded bg-surface-container-highest hover:bg-surface-bright text-xs font-semibold text-on-surface transition-colors flex items-center gap-1" data-rev-id="${v.id}">
+            <span class="material-symbols-outlined text-sm">visibility</span>
+            Preview
+          </button>
+          <button class="revert-rev-btn px-3.5 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 glow-button" data-rev-id="${v.id}" data-version="${v.version_number}">
+            <span class="material-symbols-outlined text-sm">settings_backup_restore</span>
+            Revert to v${v.version_number}
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Bind Revert Buttons
+    document.querySelectorAll('.revert-rev-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const revId = btn.getAttribute('data-rev-id');
+        const vNum = btn.getAttribute('data-version');
+        const alertBox = document.getElementById('versions-alert');
+
+        if (!confirm(`Are you sure you want to revert this project to Version ${vNum}? Current state will be safely archived.`)) {
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Reverting...</span>`;
+
+        const revertRes = await adminFetch(`/api/admin/projects/${projectId}/revert/${revId}`, { method: 'POST' });
+
+        if (revertRes && revertRes.success) {
+          if (alertBox) {
+            alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+            alertBox.textContent = `Success: ${revertRes.message}`;
+            alertBox.classList.remove('hidden');
+          }
+          setTimeout(() => {
+            closeModal();
+            const tabContainer = document.getElementById('admin-tab-container');
+            if (tabContainer) {
+              if (adminState.currentTab === 'projects') renderProjectsTab(tabContainer);
+              else if (adminState.currentTab === 'dashboard') renderDashboardTab(tabContainer);
+            }
+          }, 900);
+        } else {
+          if (alertBox) {
+            alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+            alertBox.textContent = revertRes?.error || 'Failed to revert project.';
+            alertBox.classList.remove('hidden');
+          }
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">settings_backup_restore</span>Revert to v${vNum}`;
+        }
+      };
+    });
+
+    // Bind Preview Buttons
+    document.querySelectorAll('.preview-rev-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const revId = btn.getAttribute('data-rev-id');
+        const revRes = await adminFetch(`/api/admin/projects/${projectId}/versions/${revId}`);
+        if (revRes && revRes.version && revRes.version.data) {
+          const d = revRes.version.data;
+          const p = d.project || {};
+          alert(`[Preview Version ${revRes.version.version_number}]\n\nTitle: ${p.title}\nSlug: ${p.slug}\nStatus: ${p.status}\nProblem: ${p.problem || 'N/A'}\nFeatures Count: ${(d.features || []).length}\nTech IDs: ${(d.technology_ids || []).join(', ')}`);
+        }
+      };
+    });
+  }
+
+  // -------------------------------------------------------------
+  // MODAL: SETTINGS REVISION TIMELINE & 1-CLICK REVERT
+  // -------------------------------------------------------------
+  async function openSettingsVersionsModal() {
+    const modal = document.getElementById('admin-modal');
+    const modalBody = document.getElementById('admin-modal-body');
+    if (!modal || !modalBody) return;
+
+    modalBody.innerHTML = `
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <span class="material-symbols-outlined text-xl">history</span>
+            </div>
+            <div>
+              <h2 class="font-headline-md text-lg font-bold text-on-surface">Site Settings History &amp; Revert</h2>
+              <p class="text-xs text-on-surface-variant font-medium">Revert branding, contact info &amp; SEO parameters</p>
+            </div>
+          </div>
+          <button id="close-settings-rev-btn" class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant">
+            <span class="material-symbols-outlined text-2xl">close</span>
+          </button>
+        </div>
+
+        <div id="settings-rev-alert" class="hidden p-3.5 rounded text-xs"></div>
+
+        <div id="settings-rev-list" class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
+          <div class="py-8 text-center text-on-surface-variant text-sm">Loading settings history...</div>
+        </div>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    const closeBtn = document.getElementById('close-settings-rev-btn');
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    const res = await adminFetch('/api/admin/settings/versions');
+    const listContainer = document.getElementById('settings-rev-list');
+    if (!listContainer) return;
+
+    if (!res || !res.versions || res.versions.length === 0) {
+      listContainer.innerHTML = `
+        <div class="p-8 text-center bg-surface-container-highest/30 rounded-xl border border-outline-variant/20 flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">info</span>
+          <span class="text-sm font-semibold text-on-surface">No Settings Revisions Yet</span>
+          <span class="text-xs text-on-surface-variant max-w-sm">Revisions are automatically captured whenever you save changes to Site Settings.</span>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = res.versions.map((v) => `
+      <div class="p-4 rounded-xl bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-outline-variant transition-colors">
+        <div class="flex items-start gap-3">
+          <div class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant/40 font-code-sm text-xs font-bold text-on-tertiary-container">
+            v${v.version_number}
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm font-semibold text-on-surface">${escape(v.change_summary || 'Settings snapshot')}</span>
+            <div class="flex items-center gap-3 text-xs text-on-surface-variant font-code-sm">
+              <span>${new Date(v.created_at).toLocaleString()}</span>
+              <span>•</span>
+              <span>by ${escape(v.created_by || 'admin')}</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="revert-settings-btn px-3.5 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 glow-button" data-rev-id="${v.id}" data-version="${v.version_number}">
+          <span class="material-symbols-outlined text-sm">settings_backup_restore</span>
+          Revert Settings to v${v.version_number}
+        </button>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.revert-settings-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const revId = btn.getAttribute('data-rev-id');
+        const vNum = btn.getAttribute('data-version');
+        const alertBox = document.getElementById('settings-rev-alert');
+
+        if (!confirm(`Are you sure you want to revert site settings to Version ${vNum}? Current settings will be archived.`)) {
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Reverting...</span>`;
+
+        const revertRes = await adminFetch(`/api/admin/settings/revert/${revId}`, { method: 'POST' });
+
+        if (revertRes && revertRes.success) {
+          if (alertBox) {
+            alertBox.className = 'p-3.5 rounded text-xs bg-green-950/40 border border-green-500/40 text-green-300';
+            alertBox.textContent = `Success: ${revertRes.message}`;
+            alertBox.classList.remove('hidden');
+          }
+          setTimeout(() => {
+            closeModal();
+            const tabContainer = document.getElementById('admin-tab-container');
+            if (tabContainer) renderSettingsTab(tabContainer);
+          }, 900);
+        } else {
+          if (alertBox) {
+            alertBox.className = 'p-3.5 rounded text-xs bg-red-950/50 border border-red-500/40 text-red-300';
+            alertBox.textContent = revertRes?.error || 'Failed to revert settings.';
+            alertBox.classList.remove('hidden');
+          }
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">settings_backup_restore</span>Revert Settings to v${vNum}`;
+        }
+      };
+    });
   }
 
   // -------------------------------------------------------------
@@ -1585,8 +2305,11 @@
   window.wajidxAdmin = {
     init: initAdminApp,
     switchTab: switchAdminTab,
-    openProjectModal
+    openProjectModal,
+    openProjectVersionsModal,
+    openSettingsVersionsModal
   };
 
   window.initAdminApp = initAdminApp;
 })();
+

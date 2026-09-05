@@ -1,12 +1,16 @@
 {
   "name": "wajidx",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.1.0",
+  "description": "WAJIDX — Enterprise Digital Solutions and System Architecture Platform",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "seed": "node database/seed.js",
+    "migrate": "node database/migrate.js up",
+    "migrate:rollback": "node database/migrate.js down",
+    "migrate:status": "node database/migrate.js status",
+    "deploy:cf": "wrangler deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,5 +27,8 @@
     "multer": "^2.3.0",
     "mysql2": "^3.24.2",
     "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.129.0"
   }
 }

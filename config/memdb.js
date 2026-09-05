@@ -111,6 +111,12 @@ class InMemoryDatabase {
 
     this.projectImages = [];
     this.messages = [];
+    this.revisions = [];
+    this.snapshots = [];
+    this.schemaMigrations = [
+      { version: '20260830000001_001_initial_schema', name: 'Initial WAJIDX Database Schema', applied_at: new Date() },
+      { version: '20260830000002_002_add_versioning_tables', name: 'Add Revisions, Snapshots and Schema Migration Tables', applied_at: new Date() }
+    ];
     this.siteSettings = {
       site_brand_name: 'WAJIDX',
       site_tagline: 'Build. Automate. Innovate.',
@@ -131,7 +137,9 @@ class InMemoryDatabase {
       technologies: 11,
       projectFeatures: 5,
       projectImages: 1,
-      messages: 1
+      messages: 1,
+      revisions: 1,
+      snapshots: 1
     };
   }
 
@@ -410,6 +418,92 @@ class InMemoryDatabase {
         this.siteSettings[key] = typeof value === 'string' ? value : JSON.stringify(value);
       }
       return [{ affectedRows: 1, rowCount: 1 }];
+    }
+
+    // 18. REVISIONS
+    if (upper.includes('FROM WAJIDX_REVISIONS') && upper.startsWith('SELECT')) {
+      let list = [...this.revisions];
+      if (upper.includes('WHERE ENTITY_TYPE =') && params.length >= 2) {
+        list = list.filter(r => r.entity_type === params[0] && r.entity_id === parseInt(params[1], 10));
+      } else if (upper.includes('WHERE ENTITY_TYPE =') && params.length === 1) {
+        list = list.filter(r => r.entity_type === params[0]);
+      } else if (upper.includes('WHERE ID =') && params.length >= 1) {
+        list = list.filter(r => r.id === parseInt(params[0], 10));
+      }
+      list.sort((a, b) => (b.version_number || 0) - (a.version_number || 0));
+      return [list, []];
+    }
+
+    if (upper.includes('INTO WAJIDX_REVISIONS')) {
+      const newId = this.autoIncrement.revisions++;
+      const [type, entityId, versionNum, summary, data, author] = params;
+      this.revisions.unshift({
+        id: newId,
+        entity_type: type,
+        entity_id: entityId ? parseInt(entityId, 10) : null,
+        version_number: versionNum || 1,
+        change_summary: summary || 'Revision recorded',
+        snapshot_data: typeof data === 'string' ? data : JSON.stringify(data),
+        created_by: author || 'admin',
+        created_at: new Date()
+      });
+      return [{ insertId: newId, affectedRows: 1, rowCount: 1 }];
+    }
+
+    // 19. SNAPSHOTS
+    if (upper.includes('FROM WAJIDX_SNAPSHOTS') && upper.startsWith('SELECT')) {
+      let list = [...this.snapshots];
+      if (upper.includes('WHERE ID =') && params.length >= 1) {
+        list = list.filter(s => s.id === parseInt(params[0], 10));
+      }
+      list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return [list, []];
+    }
+
+    if (upper.includes('INTO WAJIDX_SNAPSHOTS')) {
+      const newId = this.autoIncrement.snapshots++;
+      const [name, type, counts, payload, author] = params;
+      this.snapshots.unshift({
+        id: newId,
+        snapshot_name: name,
+        snapshot_type: type || 'manual',
+        item_counts: typeof counts === 'string' ? counts : JSON.stringify(counts),
+        payload: typeof payload === 'string' ? payload : JSON.stringify(payload),
+        created_by: author || 'admin',
+        created_at: new Date()
+      });
+      return [{ insertId: newId, affectedRows: 1, rowCount: 1 }];
+    }
+
+    if (upper.startsWith('DELETE FROM WAJIDX_SNAPSHOTS')) {
+      const id = parseInt(params[0], 10);
+      this.snapshots = this.snapshots.filter(s => s.id !== id);
+      return [{ affectedRows: 1, rowCount: 1 }];
+    }
+
+    // 20. SCHEMA MIGRATIONS
+    if (upper.includes('FROM WAJIDX_SCHEMA_MIGRATIONS') && upper.startsWith('SELECT')) {
+      return [[...this.schemaMigrations], []];
+    }
+
+    if (upper.includes('INTO WAJIDX_SCHEMA_MIGRATIONS')) {
+      const [version, name] = params;
+      const exists = this.schemaMigrations.some(m => m.version === version);
+      if (!exists) {
+        this.schemaMigrations.push({ version, name, applied_at: new Date() });
+      }
+      return [{ affectedRows: 1, rowCount: 1 }];
+    }
+
+    if (upper.startsWith('DELETE FROM WAJIDX_SCHEMA_MIGRATIONS')) {
+      const version = params[0];
+      this.schemaMigrations = this.schemaMigrations.filter(m => m.version !== version);
+      return [{ affectedRows: 1, rowCount: 1 }];
+    }
+
+    // CREATE TABLE / DDL ignore
+    if (upper.startsWith('CREATE TABLE') || upper.startsWith('CREATE INDEX') || upper.startsWith('DROP TABLE')) {
+      return [{ affectedRows: 0, rowCount: 0 }];
     }
 
     // Default fallback: return empty list / success

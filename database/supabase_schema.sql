@@ -146,3 +146,39 @@ BEGIN
     WITH CHECK (bucket_id = 'wajidx-media');
   END IF;
 END $$;
+
+-- 12. Revisions & Version History Table
+CREATE TABLE IF NOT EXISTS wajidx_revisions (
+  id SERIAL PRIMARY KEY,
+  entity_type VARCHAR(50) NOT NULL,
+  entity_id INT NULL,
+  version_number INT NOT NULL DEFAULT 1,
+  change_summary VARCHAR(255) NULL,
+  snapshot_data TEXT NOT NULL,
+  created_by VARCHAR(100) DEFAULT 'admin',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wajidx_revisions_entity ON wajidx_revisions(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_wajidx_revisions_created ON wajidx_revisions(created_at);
+
+-- 13. System Snapshots & Backups Table
+CREATE TABLE IF NOT EXISTS wajidx_snapshots (
+  id SERIAL PRIMARY KEY,
+  snapshot_name VARCHAR(200) NOT NULL,
+  snapshot_type VARCHAR(50) DEFAULT 'manual',
+  item_counts TEXT NULL,
+  payload TEXT NOT NULL,
+  created_by VARCHAR(100) DEFAULT 'admin',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wajidx_snapshots_created ON wajidx_snapshots(created_at);
+
+-- 14. Schema Migrations Table
+CREATE TABLE IF NOT EXISTS wajidx_schema_migrations (
+  version VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  applied_at TIMESTAMPTZ DEFAULT NOW()
+);
+

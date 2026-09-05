@@ -107,3 +107,37 @@ CREATE TABLE IF NOT EXISTS `wajidx_contact_messages` (
   `ip_address` VARCHAR(50) NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 11. Revisions & Version History Table (Projects, Settings, etc.)
+CREATE TABLE IF NOT EXISTS `wajidx_revisions` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `entity_type` VARCHAR(50) NOT NULL, -- e.g. 'project', 'setting'
+  `entity_id` INT NULL,
+  `version_number` INT NOT NULL DEFAULT 1,
+  `change_summary` VARCHAR(255) NULL,
+  `snapshot_data` LONGTEXT NOT NULL, -- JSON snapshot of the entity
+  `created_by` VARCHAR(100) DEFAULT 'admin',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_revisions_entity` (`entity_type`, `entity_id`),
+  INDEX `idx_revisions_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 12. Full System Snapshots & Backups Table
+CREATE TABLE IF NOT EXISTS `wajidx_snapshots` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `snapshot_name` VARCHAR(200) NOT NULL,
+  `snapshot_type` VARCHAR(50) DEFAULT 'manual', -- 'manual', 'auto_pre_update', 'scheduled'
+  `item_counts` TEXT NULL, -- JSON overview of items
+  `payload` LONGTEXT NOT NULL, -- Complete serialized database state
+  `created_by` VARCHAR(100) DEFAULT 'admin',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_snapshots_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 13. Schema Migrations Table
+CREATE TABLE IF NOT EXISTS `wajidx_schema_migrations` (
+  `version` VARCHAR(100) PRIMARY KEY,
+  `name` VARCHAR(255) NOT NULL,
+  `applied_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
