@@ -47,7 +47,7 @@
     const finalTitle = title ? `${title} | ${brandName}` : `${brandName} — ${state.settings.site_tagline || 'Build. Automate. Innovate.'}`;
     const finalDesc = description || state.settings.seo_default_description || state.settings.site_description || '';
     const finalKeywords = keywords || state.settings.seo_default_keywords || '';
-    const finalCanonical = canonicalUrl || window.location.href;
+    const finalCanonical = canonicalUrl || `${window.location.origin}${window.location.pathname}`;
 
     document.title = finalTitle;
 
@@ -111,13 +111,13 @@
           '@id': `${window.location.origin}/#organization`,
           'name': brandName,
           'url': window.location.origin,
-          'logo': `${window.location.origin}/assets/logo.png`,
+          'logo': `${window.location.origin}/assets/wajidx-logo.png`,
           'description': state.settings.site_description,
           'sameAs': [
             state.settings.social_github,
             state.settings.social_linkedin,
             state.settings.social_twitter
-          ].filter(Boolean)
+          ].filter(url => url && url !== 'https://linkedin.com/company/wajidx')
         },
         {
           '@type': 'WebSite',
@@ -274,11 +274,11 @@
           </div>
 
           <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl lg:text-display-lg text-on-surface leading-[1.15] sm:leading-tight tracking-tight font-bold">
-            We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container via-tertiary to-sky-300 drop-shadow-[0_0_20px_rgba(38,116,231,0.35)]">Digital Solutions</span> That Move Businesses Forward.
+            Custom <span class="text-transparent bg-clip-text bg-gradient-to-r from-on-tertiary-container via-tertiary to-sky-300 drop-shadow-[0_0_20px_rgba(38,116,231,0.35)]">POS, ERP &amp; Automation</span> Systems Built Around Your Business.
           </h1>
 
           <p class="font-body-lg text-sm sm:text-base md:text-lg text-on-surface-variant max-w-xl border-l-2 border-on-tertiary-container pl-4 sm:pl-6 py-1 bg-gradient-to-r from-on-tertiary-container/5 to-transparent leading-relaxed">
-            Technology should solve problems, not create them. We engineer robust, scalable systems designed around your operational reality.
+            Run operations with less manual work, fewer errors, and clearer control. We build production-ready systems for restaurants, retail, and operations-heavy teams.
           </p>
 
           <!-- ACTION BUTTONS (WITH HIGH ATTENTION EXPLORE PROJECTS CTA) -->
@@ -301,12 +301,12 @@
           <div class="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-6 mt-4 sm:mt-8 pt-6 sm:pt-8 border-t border-outline-variant/30">
             <div class="flex flex-col gap-1">
               <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">EXPERTISE</span>
-              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">ERP &amp; POS Systems</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">Restaurants &amp; Retail</span>
             </div>
             <div class="hidden sm:block w-px h-8 bg-outline-variant/30"></div>
             <div class="flex flex-col gap-1">
               <span class="font-label-caps text-[10px] sm:text-label-caps text-on-surface-variant">FOCUS</span>
-              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">Enterprise Automation</span>
+              <span class="font-code-sm text-xs sm:text-code-sm text-on-surface font-mono font-semibold">Operations-Heavy Teams</span>
             </div>
           </div>
         </div>
@@ -394,7 +394,7 @@
                 </div>
                 <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">POS & Business ERP Systems</h3>
                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                  High-speed transactional terminals, real-time Kitchen Display Systems, ingredient gram-level recipe costing, and strict shift audits.
+                  Keep sales, kitchen operations, inventory, recipes, and shift controls connected in one system—so teams work faster and managers see what is happening in real time.
                 </p>
               </div>
               <span class="font-code-sm text-xs text-on-tertiary-container">01 // TRANSACTION ENGINES</span>
@@ -408,7 +408,7 @@
                 </div>
                 <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">AI & Computer Vision</h3>
                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                  Edge biometric attendance, anti-spoofing neural embeddings, real-time object tracking, and automated workforce intelligence pipelines.
+                  Reduce buddy punching and manual attendance work with liveness-aware face verification, automated time records, and workforce reporting built around your policies.
                 </p>
               </div>
               <span class="font-code-sm text-xs text-on-tertiary-container">02 // EDGE INFERENCE</span>
@@ -422,10 +422,39 @@
                 </div>
                 <h3 class="font-headline-md text-xl font-bold text-on-surface mb-3">Workflow Automation</h3>
                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                  Eliminate repetitive human error through robust event-driven microservices, supplier price indexers, and automated ledger sync.
+                  Cut repetitive data entry and reconciliation work by connecting supplier pricing, inventory movements, operational events, and finance workflows automatically.
                 </p>
               </div>
               <span class="font-code-sm text-xs text-on-tertiary-container">03 // AUTOMATION PIPELINES</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Industries We Serve -->
+      <section class="py-24 px-4 md:px-xl border-t border-outline-variant/20 relative z-10 bg-surface-container-lowest/30">
+        <div class="max-w-container-max mx-auto">
+          <div class="max-w-3xl mb-12">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+              <span class="font-label-caps text-label-caps text-on-tertiary-container tracking-widest uppercase">BUILT FOR OPERATIONS</span>
+            </div>
+            <h2 class="font-display-lg text-3xl md:text-4xl text-on-surface font-bold mb-4">Software for teams that cannot afford operational friction.</h2>
+            <p class="font-body-lg text-on-surface-variant">WAJIDX focuses on businesses where transactions, inventory, staff, and daily workflows need to stay accurate and connected.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-7 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30">
+              <h3 class="font-headline-md text-lg font-bold text-on-surface mb-2">Restaurants &amp; QSR</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">POS, kitchen displays, recipes, food costing, inventory, purchasing, and multi-branch controls.</p>
+            </div>
+            <div class="p-7 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30">
+              <h3 class="font-headline-md text-lg font-bold text-on-surface mb-2">Retail &amp; Distribution</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">Sales, stock, procurement, warehouse visibility, supplier pricing, and management reporting.</p>
+            </div>
+            <div class="p-7 rounded-DEFAULT bg-surface-container-low/60 border border-outline-variant/30">
+              <h3 class="font-headline-md text-lg font-bold text-on-surface mb-2">Workforce &amp; Operations</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">Attendance, approvals, workflow automation, audit trails, integrations, and operational dashboards.</p>
             </div>
           </div>
         </div>
@@ -1222,8 +1251,8 @@
             <div class="flex gap-4">
               <span class="material-symbols-outlined text-on-tertiary-container text-2xl mt-1">speed</span>
               <div>
-                <h3 class="font-headline-md text-lg font-bold text-on-surface mb-1">Sub-Second Execution</h3>
-                <p class="text-on-surface-variant text-sm leading-relaxed">We optimize every query, payload, and client render for instant responsiveness under high concurrency.</p>
+                <h3 class="font-headline-md text-lg font-bold text-on-surface mb-1">Performance-First Execution</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed">We optimize queries, payloads, and client rendering to keep operational interfaces responsive as workloads grow.</p>
               </div>
             </div>
 
@@ -1292,7 +1321,7 @@
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Custom POS &amp; Hospitality Engines</h2>
               <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
-                Specialized point-of-sale platforms for restaurants and retail. Features include sub-second dispatch, live recipe Bill-of-Materials depletion, multi-station Kitchen Display Systems, thermal printer routing, and blind shift drop auditing.
+                Keep front-of-house, kitchen, inventory, recipes, and shift controls connected in one operational system. We tailor POS workflows, KDS routing, recipe depletion, printer flows, and audit controls to the way your team actually works.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">Local-First POS</span>
@@ -1317,7 +1346,7 @@
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Computer Vision &amp; Edge AI Systems</h2>
               <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
-                High-throughput visual recognition pipelines executed directly on edge hardware. Implement biometric attendance, automated quality control inspection, anti-spoofing verification, and continuous video stream classification.
+                Reduce manual attendance work and improve verification controls with edge-based computer vision. We design liveness-aware face attendance, visual inspection, and event pipelines around your workforce and operating environment.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">OpenCV / Python</span>
@@ -1342,7 +1371,7 @@
               </div>
               <h2 class="font-headline-md text-2xl md:text-3xl font-bold text-on-surface">Enterprise Business Software &amp; ERP</h2>
               <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
-                Centralized ERP and inventory management platforms. Seamlessly track multi-warehouse inventory, procurement purchase orders, supplier price variance, and automated accounts reconciliation.
+                Give operations and management one source of truth for stock, purchasing, suppliers, and reconciliation. We build ERP workflows around multi-location inventory, procurement, price variance, permissions, and reporting.
               </p>
               <div class="flex flex-wrap gap-2 pt-2">
                 <span class="tech-badge px-2.5 py-1 rounded bg-surface-container-highest text-on-surface text-xs">Relational SQL Modeling</span>
@@ -1383,7 +1412,7 @@
             The WAJIDX Engineering Lifecycle
           </h1>
           <p class="font-body-lg text-base sm:text-xl text-on-surface-variant max-w-3xl leading-relaxed">
-            A disciplined, 5-stage architectural process that turns complex operational chaos into rock-solid software systems.
+            A disciplined, 5-stage process that turns operational bottlenecks into reliable software systems.
           </p>
         </div>
 
@@ -1440,7 +1469,7 @@
               <span class="font-label-caps text-xs text-on-tertiary-container">PHASE FOUR // VALIDATION</span>
               <h2 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface">Load Testing, Edge Simulation &amp; Hardening</h2>
               <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
-                Simulated network failure tests, high-concurrency order dispatch simulations, biometric spoof tests, and strict vulnerability audits to guarantee unshakeable stability.
+                Simulated network failures, high-concurrency order dispatch, biometric spoof scenarios, and security reviews help expose weaknesses before production rollout.
               </p>
             </div>
           </div>
