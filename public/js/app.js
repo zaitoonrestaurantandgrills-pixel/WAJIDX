@@ -117,7 +117,7 @@
             state.settings.social_github,
             state.settings.social_linkedin,
             state.settings.social_twitter
-          ].filter(Boolean)
+          ].filter(url => url && url !== 'https://linkedin.com/company/wajidx')
         },
         {
           '@type': 'WebSite',
