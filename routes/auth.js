@@ -7,9 +7,9 @@ const { verifyAdmin, JWT_SECRET } = require('../middleware/auth');
 const { supabase, isConfigured: isSupabaseConfigured } = require('../config/supabase');
 const { authRateLimiter, timingSafeCompare } = require('../middleware/security');
 
-const defaultUser = process.env.ADMIN_DEFAULT_USER || 'admin';
-const defaultEmail = process.env.ADMIN_DEFAULT_EMAIL || 'admin@wajidx.com';
-const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@Wajidx2026!';
+const defaultUser = String(process.env.ADMIN_DEFAULT_USER || 'admin').trim();
+const defaultEmail = String(process.env.ADMIN_DEFAULT_EMAIL || 'admin@wajidx.com').trim();
+const defaultPassword = String(process.env.ADMIN_DEFAULT_PASSWORD || '');
 
 // POST /api/auth/login (with brute-force rate limiting)
 router.post('/login', authRateLimiter, async (req, res) => {
@@ -83,9 +83,13 @@ router.post('/login', authRateLimiter, async (req, res) => {
       console.warn('[AUTH DB WARNING] Database connection offline or failed:', dbErr.message);
     }
 
-    // 3. Fallback master credential check (if DB is pending configuration or matches default setup)
-    if (!dbAuthenticated) {
-      const isDefaultUser = (cleanInput.toLowerCase() === defaultUser.toLowerCase() || cleanInput.toLowerCase() === defaultEmail.toLowerCase());
+    // 3. Optional bootstrap credential check.
+    // Disabled unless ADMIN_DEFAULT_PASSWORD is explicitly configured.
+    if (!dbAuthenticated && defaultPassword) {
+      const isDefaultUser = (
+        cleanInput.toLowerCase() === defaultUser.toLowerCase() ||
+        cleanInput.toLowerCase() === defaultEmail.toLowerCase()
+      );
       const isDefaultPass = timingSafeCompare(password, defaultPassword);
 
       if (isDefaultUser && isDefaultPass) {

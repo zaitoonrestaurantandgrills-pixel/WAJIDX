@@ -24,7 +24,7 @@ router.get('/settings', async (req, res) => {
         contact_email: 'contact@wajidx.com',
         contact_phone: '+923351362639',
         contact_address: 'Karachi, Pakistan',
-        social_linkedin: 'https://linkedin.com/company/wajidx',
+        social_linkedin: '',
         social_github: 'https://github.com/wajidx',
         social_twitter: 'https://x.com/wajidx',
         footer_text: '© 2026 WAJIDX. All rights reserved. Precision engineering for digital solutions.'

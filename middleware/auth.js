@@ -1,8 +1,16 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('node:crypto');
 const { query } = require('../config/db');
 const { supabaseAdmin, isConfigured: isSupabaseConfigured } = require('../config/supabase');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'wajidx_super_secret_jwt_key_2026_precision_minimalism';
+const configuredJwtSecret = String(process.env.JWT_SECRET || '').trim();
+if (process.env.NODE_ENV === 'production' && configuredJwtSecret.length < 32) {
+  throw new Error('JWT_SECRET must be configured with at least 32 characters in production.');
+}
+const JWT_SECRET = configuredJwtSecret || crypto.randomBytes(48).toString('hex');
+if (!configuredJwtSecret) {
+  console.warn('[AUTH WARNING] JWT_SECRET is not set. Using an ephemeral development-only secret.');
+}
 
 async function verifyAdmin(req, res, next) {
   try {

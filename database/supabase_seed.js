@@ -41,10 +41,13 @@ async function seedSupabase() {
   // 2. Admin User
   const adminUsername = process.env.ADMIN_DEFAULT_USER || 'admin';
   const adminEmail = process.env.ADMIN_DEFAULT_EMAIL || 'admin@wajidx.com';
-  const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@Wajidx2026!';
+  const adminPassword = String(process.env.ADMIN_DEFAULT_PASSWORD || '');
 
   const [existingAdmins] = await query('SELECT id FROM wajidx_admins WHERE username = ? OR email = ?', [adminUsername, adminEmail]);
   if (existingAdmins.length === 0) {
+    if (adminPassword.length < 12) {
+      throw new Error('ADMIN_DEFAULT_PASSWORD must be explicitly set to at least 12 characters before creating the first admin.');
+    }
     const passwordHash = await bcrypt.hash(adminPassword, 12);
     await query(
       'INSERT INTO wajidx_admins (username, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)',
@@ -285,7 +288,7 @@ async function seedSupabase() {
     ['contact_email', 'contact@wajidx.com'],
     ['contact_phone', '+923351362639'],
     ['contact_address', 'Karachi, Pakistan'],
-    ['social_linkedin', 'https://linkedin.com/company/wajidx'],
+    ['social_linkedin', ''],
     ['social_github', 'https://github.com/wajidx'],
     ['social_twitter', 'https://x.com/wajidx'],
     ['footer_text', '© 2026 WAJIDX. All rights reserved. Precision engineering for digital solutions.'],

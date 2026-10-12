@@ -13,6 +13,7 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const { testConnection, query } = require('./config/db');
+const { renderPublicPage } = require('./lib/public-renderer');
 
 const basePath = typeof __dirname !== 'undefined' ? __dirname : (typeof process !== 'undefined' && process.cwd ? process.cwd() : '/');
 
@@ -28,9 +29,25 @@ app.disable('x-powered-by');
 // Security: Apply HTTP Security Headers (nosniff, X-Frame-Options, HSTS, etc.)
 app.use(securityHeaders);
 
-// CORS Configuration
+// CORS Configuration: allow same-origin requests plus explicitly configured origins.
+const allowedOrigins = new Set();
+try {
+  allowedOrigins.add(new URL(SITE_URL).origin);
+} catch (error) {
+  console.warn('[CORS WARNING] SITE_URL is not a valid absolute URL:', SITE_URL);
+}
+for (const origin of String(process.env.CORS_ORIGIN || '').split(',')) {
+  const cleanOrigin = origin.trim();
+  if (cleanOrigin) allowedOrigins.add(cleanOrigin);
+}
+
 app.use(cors({
-  origin: true,
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS origin not allowed'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
@@ -39,8 +56,43 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
+// Keep the admin surface out of search indexes even if robots.txt is ignored.
+app.use('/admin', (req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  next();
+});
+
+// Server-render public routes so crawlers and link previews receive route-specific
+// titles, descriptions, canonical URLs, and meaningful page content before JS runs.
+const publicRoutes = ['/', '/projects', '/about', '/services', '/process', '/contact'];
+app.get(publicRoutes, async (req, res, next) => {
+  try {
+    const rendered = await renderPublicPage({
+      basePath,
+      siteUrl: SITE_URL,
+      pathname: req.path
+    });
+    res.status(rendered.statusCode || 200).type('html').send(rendered.html);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/projects/:slug', async (req, res, next) => {
+  try {
+    const rendered = await renderPublicPage({
+      basePath,
+      siteUrl: SITE_URL,
+      pathname: req.path
+    });
+    res.status(rendered.statusCode || 200).type('html').send(rendered.html);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Static files (for local runtime)
-app.use(express.static(path.join(basePath, 'public')));
+app.use(express.static(path.join(basePath, 'public'), { index: false }));
 app.use('/uploads', express.static(path.join(basePath, 'public/uploads')));
 
 // Rate limit API endpoints

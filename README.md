@@ -49,7 +49,9 @@ WAJIDX is a specialized software and digital engineering brand. This repository 
 3. In the Vercel **Environment Variables** section, add:
    * `NODE_ENV` = `production`
    * `SITE_URL` = `https://your-project.vercel.app`
-   * `JWT_SECRET` = `your_secure_random_key_here`
+   * `JWT_SECRET` = a unique random secret of at least 32 characters
+   * `ADMIN_DEFAULT_PASSWORD` = a unique bootstrap password (remove or rotate after the first admin is provisioned)
+   * `CORS_ORIGIN` = `https://your-production-domain.example`
    * `SUPABASE_URL` = `https://your-project-id.supabase.co`
    * `SUPABASE_ANON_KEY` = `your_anon_key`
    * `SUPABASE_SERVICE_ROLE_KEY` = `your_service_role_key`
@@ -92,7 +94,7 @@ npm start
 ```
 * **Website**: [http://localhost:3000](http://localhost:3000)
 * **Admin CMS**: [http://localhost:3000/admin](http://localhost:3000/admin)
-* **Default Admin**: `admin` / `Admin@Wajidx2026!`
+* **Admin bootstrap**: set `ADMIN_DEFAULT_USER`, `ADMIN_DEFAULT_EMAIL`, and a unique `ADMIN_DEFAULT_PASSWORD` in your environment before creating the first admin. No password is shipped in source control.
 
 ---
 
